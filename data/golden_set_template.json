@@ -1,0 +1,10 @@
+[
+  {
+    "query": "where can hostellers see the mess menu",
+    "expected_pair_id": "unify_mess_menu"
+  },
+  {
+    "query": "can you tell me my exact attendance percentage",
+    "expected_pair_id": "SHOULD_ABSTAIN"
+  }
+]

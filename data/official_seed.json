@@ -1,0 +1,465 @@
+[
+  {
+    "id": "campus_hospital_services",
+    "questions": [
+      "What medical facilities are available at SASTRA?",
+      "medical facility in SASTRA",
+      "medical assistance at SASTRA",
+      "where is the campus hospital",
+      "where is hospital in SASTRA",
+      "is there a hospital inside SASTRA",
+      "what should I do if I fall sick on campus",
+      "Vaidyanatha Arogyasala facilities"
+    ],
+    "answer": "SASTRA's in-house hospital is Vaidyanatha Arogyasala. It has 10 beds, regular doctors and paramedical staff, and is equipped to handle medical emergencies round the clock. On-campus medical consultation is offered free; other costs such as off-campus visits, prescriptions, tests, ambulance service and hospital care remain the student's responsibility.",
+    "category": "health",
+    "source": "SASTRA Hospital — Vaidyanatha Arogyasala (official)",
+    "source_url": "https://sastra.edu/infrastructure/amenities/hospital.html",
+    "source_type": "official",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "active",
+    "last_verified": "2026-07-28",
+    "contact_fallback": "SASTRA campus hospital"
+  },
+  {
+    "id": "campus_sports_facilities",
+    "questions": [
+      "What sports facilities are available at SASTRA?",
+      "does SASTRA have an indoor sports stadium",
+      "what games can I play in Maruti indoor stadium",
+      "are there badminton and table tennis facilities",
+      "is there a gym at SASTRA"
+    ],
+    "answer": "SASTRA's MARUTI indoor stadium has billiards tables, badminton courts, a basketball court, table tennis and carrom facilities. The university also has a fitness centre in the stadium, a separate gymnasium and jogging track for women, and outdoor facilities for sports including soccer, tennis and cricket.",
+    "category": "campus",
+    "source": "SASTRA Sports Facilities (official)",
+    "source_url": "https://sastra.edu/infrastructure/amenities/sports.html",
+    "source_type": "official",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "active",
+    "last_verified": "2026-07-28",
+    "contact_fallback": null
+  },
+  {
+    "id": "academic_bank_of_credits_registration",
+    "questions": [
+      "What is the Academic Bank of Credits ID?",
+      "how do I register for ABC ID",
+      "ABC registration for SASTRA students",
+      "what is academic bank of credits",
+      "abc.gov.in registration"
+    ],
+    "answer": "The Academic Bank of Credits (ABC) lets students open an academic account and digitally store, verify, accumulate and transfer eligible credits earned from participating higher-education institutions. SASTRA asks its students to register through www.abc.gov.in with the required details.",
+    "category": "academics",
+    "source": "Academic Bank of Credits (ABC) Registration — SASTRA official",
+    "source_url": "https://www.sastra.edu/home/academic-bank-of-credits-abc-registration.html",
+    "source_type": "official",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "active",
+    "last_verified": "2026-07-28",
+    "contact_fallback": null
+  },
+  {
+    "id": "official_campus_map",
+    "questions": [
+      "Where can I find the SASTRA campus map?",
+      "campus map SASTRA Thanjavur",
+      "how do I navigate SASTRA campus",
+      "SASTRA building map",
+      "map of SASTRA university"
+    ],
+    "answer": "SASTRA publishes an official campus map for the Thanjavur campus on its website. Use the map to locate schools and campus facilities; if you are unsure of a destination, ask the relevant office or a campus volunteer for directions.",
+    "category": "campus",
+    "source": "Campus Map — SASTRA official",
+    "source_url": "https://www.sastra.edu/campus-map.html",
+    "source_type": "official",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "active",
+    "last_verified": "2026-07-28",
+    "contact_fallback": null
+  },
+  {
+    "id": "choice_based_credit_system",
+    "questions": [
+      "What is CBCS at SASTRA?",
+      "what does choice based credit system mean",
+      "CBCS meaning for BTech students",
+      "how are courses organised in SASTRA BTech",
+      "core department and open electives SASTRA"
+    ],
+    "answer": "SASTRA's B.Tech. programme uses the Choice-Based Credit System (CBCS). Students complete core courses as well as department and open electives; the elective structure lets students pursue areas of interest within the programme while meeting the required credits for the degree.",
+    "category": "academics",
+    "source": "SASTRA MHRD/UGC compliance — curricular structure (official)",
+    "source_url": "https://sastra.edu/8",
+    "source_type": "official",
+    "effective_from": "2026-01-01",
+    "valid_until": null,
+    "status": "active",
+    "last_verified": "2026-07-28",
+    "contact_fallback": null
+  },
+  {
+    "id": "semester_abroad_programme",
+    "questions": [
+      "What is the Semester Abroad Programme?",
+      "what is SAP at SASTRA",
+      "can I do final semester project abroad",
+      "SASTRA foreign internship opportunity",
+      "semester abroad research project"
+    ],
+    "answer": "SASTRA's Semester Abroad Programme (SAP) enables final-semester students to undertake project work or course work at partner universities abroad. The university also encourages summer internships at prestigious research institutions and industries; eligibility, selection and available destinations are determined through the programme's current process.",
+    "category": "academics",
+    "source": "SAP — SASTRA official",
+    "source_url": "https://sastra.edu/academics/sap.html",
+    "source_type": "official",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "active",
+    "last_verified": "2026-07-28",
+    "contact_fallback": null
+  },
+  {
+    "id": "knowledge_connect_repository",
+    "questions": [
+      "What is Knowledge Connect at SASTRA?",
+      "where can I find SASTRA research papers",
+      "SASTRA institutional repository",
+      "knowledge connect research repository",
+      "does SASTRA have an online research repository"
+    ],
+    "answer": "Knowledge Connect @ SASTRA is the university libraries' institutional repository. It provides access to research and scholarly output that has been selected and deposited by SASTRA departments and centres.",
+    "category": "campus",
+    "source": "Knowledge Connect @ SASTRA (official repository)",
+    "source_url": "https://knowledgeconnect.sastra.edu/",
+    "source_type": "official",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "active",
+    "last_verified": "2026-07-28",
+    "contact_fallback": null
+  },
+  {
+    "id": "thanjavur_main_campus_location",
+    "questions": [
+      "Where is the SASTRA Thanjavur main campus?",
+      "SASTRA main campus address",
+      "how to reach SASTRA Thanjavur campus",
+      "Tirumalaisamudram SASTRA location",
+      "SASTRA Thanjavur pincode"
+    ],
+    "answer": "SASTRA Deemed University’s main campus is at Tirumalaisamudram, Thanjavur, Tamil Nadu 613401. The official campus map can help you locate buildings and facilities after you arrive.",
+    "category": "admissions",
+    "source": "SASTRA Campus Map and contact details (official)",
+    "source_url": "https://www.sastra.edu/campus-map.html",
+    "source_type": "official",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "active",
+    "last_verified": "2026-07-28",
+    "contact_fallback": null
+  },
+  {
+    "id": "chennai_campus_location",
+    "questions": [
+      "Where is the SASTRA Chennai campus?",
+      "SASTRA Chennai campus address",
+      "how to reach SASTRA Chennai campus",
+      "SASTRA Vadapalani location",
+      "Chennai campus contact details"
+    ],
+    "answer": "SASTRA University Chennai Campus is at No. 21, A. V. Meiyappan Salai, Arcot Road, Vadapalani, Chennai 600026. Its official contact number is 044 2365 0027 and e-mail is sastracc@sastra.ac.in.",
+    "category": "admissions",
+    "source": "SASTRA Chennai Campus (official)",
+    "source_url": "https://chennaicampus.sastra.edu/",
+    "source_type": "official",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "active",
+    "last_verified": "2026-07-28",
+    "contact_fallback": "sastracc@sastra.ac.in"
+  },
+  {
+    "id": "campus_temple",
+    "questions": [
+      "Is there a temple at SASTRA?",
+      "where is the SASTRA temple",
+      "Jaya Ganapathy temple SASTRA",
+      "campus temple at SASTRA",
+      "religious facilities on SASTRA campus"
+    ],
+    "answer": "SASTRA’s Thanjavur campus has the Shri JayaGanapathy temple, which hosts spiritual activities and daily or special poojas. Check the official campus map or ask on campus for its current route and visiting details.",
+    "category": "campus",
+    "source": "Temple — SASTRA official",
+    "source_url": "https://www.sastra.edu/home/infrastructure/amenities/temple.html",
+    "source_type": "official",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "active",
+    "last_verified": "2026-07-28",
+    "contact_fallback": null
+  },
+  {
+    "id": "unify_campus_map",
+    "questions": ["does UniFy have a campus map", "UniFy campus map", "where is the map in UniFy", "can UniFy help me find buildings", "navigate campus using UniFy"],
+    "answer": "UniFy includes a Campus Map to help you find your way around campus.",
+    "category": "unify",
+    "source": "UniFy product capabilities — supplied by UniFy team",
+    "source_url": "local://data/product_sources/unify_capabilities_2026-07-28.md",
+    "source_type": "product_owner",
+    "effective_from": "2026-07-28", "valid_until": null, "status": "active", "last_verified": "2026-07-28", "contact_fallback": null
+  },
+  {
+    "id": "unify_academic_information_and_swi",
+    "questions": ["can I see academic information in UniFy", "UniFy or SWI for academic details", "when can I use SWI", "do I need register number for SWI", "academic related info in UniFy"],
+    "answer": "You can view academic-related information in UniFy and in SWI. SWI access is available once you have your register number and password.",
+    "category": "unify",
+    "source": "UniFy product capabilities — supplied by UniFy team",
+    "source_url": "local://data/product_sources/unify_capabilities_2026-07-28.md",
+    "source_type": "product_owner",
+    "effective_from": "2026-07-28", "valid_until": null, "status": "active", "last_verified": "2026-07-28", "contact_fallback": null
+  },
+  {
+    "id": "unify_resource_bot",
+    "questions": ["what is Resource Bot in UniFy", "UniFy resource bot", "where can I find the resource bot", "does UniFy have a bot for resources", "resource help in UniFy"],
+    "answer": "UniFy includes Resource Bot as a place to access resources and information in the app.",
+    "category": "unify",
+    "source": "UniFy product capabilities — supplied by UniFy team",
+    "source_url": "local://data/product_sources/unify_capabilities_2026-07-28.md",
+    "source_type": "product_owner",
+    "effective_from": "2026-07-28", "valid_until": null, "status": "active", "last_verified": "2026-07-28", "contact_fallback": null
+  },
+  {
+    "id": "unify_know_your_professor",
+    "questions": ["know your professor UniFy", "how can I see faculty details in UniFy", "UniFy professor information", "find my faculty details", "does UniFy show professor details"],
+    "answer": "Use Know Your Professor in UniFy to view faculty details.",
+    "category": "unify",
+    "source": "UniFy product capabilities — supplied by UniFy team",
+    "source_url": "local://data/product_sources/unify_capabilities_2026-07-28.md",
+    "source_type": "product_owner",
+    "effective_from": "2026-07-28", "valid_until": null, "status": "active", "last_verified": "2026-07-28", "contact_fallback": null
+  },
+  {
+    "id": "unify_mess_menu",
+    "questions": ["where can hostellers see mess menu", "UniFy mess menu", "today mess food in UniFy", "does UniFy have hostel mess menu", "mess menu for hostellers"],
+    "answer": "Hostellers can view the Mess Menu in UniFy.",
+    "category": "unify",
+    "source": "UniFy product capabilities — supplied by UniFy team",
+    "source_url": "local://data/product_sources/unify_capabilities_2026-07-28.md",
+    "source_type": "product_owner",
+    "effective_from": "2026-07-28", "valid_until": null, "status": "active", "last_verified": "2026-07-28", "contact_fallback": null
+  },
+  {
+    "id": "unify_community_page",
+    "questions": ["can seniors help me in UniFy", "UniFy community page", "where can I post my question in UniFy", "ask doubts to seniors UniFy", "community support in UniFy"],
+    "answer": "Use the UniFy Community Page to post queries and get help from seniors.",
+    "category": "unify",
+    "source": "UniFy product capabilities — supplied by UniFy team",
+    "source_url": "local://data/product_sources/unify_capabilities_2026-07-28.md",
+    "source_type": "product_owner",
+    "effective_from": "2026-07-28", "valid_until": null, "status": "active", "last_verified": "2026-07-28", "contact_fallback": null
+  },
+  {
+    "id": "unify_timetable",
+    "questions": ["where can I see my timetable in UniFy", "UniFy timetable", "can I view class schedule in UniFy", "my timetable UniFy", "check schedule in UniFy"],
+    "answer": "You can view your timetable in UniFy.",
+    "category": "unify",
+    "source": "UniFy product capabilities — supplied by UniFy team",
+    "source_url": "local://data/product_sources/unify_capabilities_2026-07-28.md",
+    "source_type": "product_owner",
+    "effective_from": "2026-07-28", "valid_until": null, "status": "active", "last_verified": "2026-07-28", "contact_fallback": null
+  },
+  {
+    "id": "unify_placement_and_gate_preparation",
+    "questions": ["placement preparation in UniFy", "GATE preparation UniFy", "can UniFy help me prepare for placements", "prepare for GATE in UniFy", "career exam prep UniFy"],
+    "answer": "UniFy includes support for preparing for Placement and GATE exams.",
+    "category": "unify",
+    "source": "UniFy product capabilities — supplied by UniFy team",
+    "source_url": "local://data/product_sources/unify_capabilities_2026-07-28.md",
+    "source_type": "product_owner",
+    "effective_from": "2026-07-28", "valid_until": null, "status": "active", "last_verified": "2026-07-28", "contact_fallback": null
+  },
+  {
+    "id": "unify_career_roadmap",
+    "questions": ["what is Career Roadmap in UniFy", "UniFy career roadmap", "career guidance in UniFy", "plan my career through UniFy", "does UniFy have a roadmap"],
+    "answer": "UniFy includes Career Roadmap for career planning and guidance.",
+    "category": "unify",
+    "source": "UniFy product capabilities — supplied by UniFy team",
+    "source_url": "local://data/product_sources/unify_capabilities_2026-07-28.md",
+    "source_type": "product_owner",
+    "effective_from": "2026-07-28", "valid_until": null, "status": "active", "last_verified": "2026-07-28", "contact_fallback": null
+  },
+  {
+    "id": "unify_club_hub",
+    "questions": ["latest club events in UniFy", "UniFy club hub", "where are club updates", "club event updates in UniFy", "find clubs in UniFy"],
+    "answer": "Use Club Hub in UniFy for the latest club updates and events.",
+    "category": "unify",
+    "source": "UniFy product capabilities — supplied by UniFy team",
+    "source_url": "local://data/product_sources/unify_capabilities_2026-07-28.md",
+    "source_type": "product_owner",
+    "effective_from": "2026-07-28", "valid_until": null, "status": "active", "last_verified": "2026-07-28", "contact_fallback": null
+  },
+  {
+    "id": "sastra_student_clubs",
+    "questions": [
+      "what student clubs are there at SASTRA",
+      "can freshers join clubs at SASTRA",
+      "SASTRA technical and cultural clubs",
+      "what activities do SASTRA clubs conduct",
+      "clubs for students in SASTRA"
+    ],
+    "answer": "SASTRA has student clubs across technical, cultural and professional interests. The university says clubs conduct regular meetings, training, workshops and contests; examples include Auto, Literary, Oratory and Debating, Fine Arts, JAM and Quiz clubs. Check the current club or association for its joining process and schedule.",
+    "category": "campus",
+    "source": "Student Clubs — SASTRA official",
+    "source_url": "https://sastra.edu/student-activities/clubs.html",
+    "source_type": "official",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "active",
+    "last_verified": "2026-07-28",
+    "contact_fallback": null
+  },
+  {
+    "id": "sastra_student_council_scos",
+    "questions": [
+      "what is SCOS at SASTRA",
+      "Student Citizens of SASTRA meaning",
+      "SASTRA student council",
+      "who helps with first year orientation at SASTRA",
+      "SCOS volunteers SASTRA"
+    ],
+    "answer": "SCOS means Student Citizens of SASTRA. It is the student body through which SASTRA’s Student Council functions; its coordinators recruit volunteers for programmes such as first-year orientation, parent interactions and placement drives.",
+    "category": "campus",
+    "source": "Student Activities — SASTRA official",
+    "source_url": "https://sastra.edu/student-activities.html",
+    "source_type": "official",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "active",
+    "last_verified": "2026-07-28",
+    "contact_fallback": null
+  },
+  {
+    "id": "swas_student_support",
+    "questions": [
+      "what is SWAS at SASTRA",
+      "student wellness support SASTRA",
+      "does SASTRA offer mentoring and counselling",
+      "where can I get career counselling at SASTRA",
+      "SASTRA wellbeing support for students"
+    ],
+    "answer": "SWAS is SASTRA’s Centre for Student Wellness Activities and Support. It provides student support including mentoring, counselling, academic guidance, peer mentorship, career counselling, orientation and transition support. For an urgent medical or mental-health situation, contact the campus hospital or emergency services rather than relying on the bot.",
+    "category": "health",
+    "source": "SWAS — Student Wellness Activities & Support (SASTRA official)",
+    "source_url": "https://sastra.edu/swas/",
+    "source_type": "official",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "active",
+    "last_verified": "2026-07-28",
+    "contact_fallback": "deanswas@sastra.edu"
+  },
+  {
+    "id": "sastra_central_library_facilities",
+    "questions": [
+      "what facilities are in SASTRA central library",
+      "does SASTRA library have internet and study space",
+      "Saraswathi Sadan library facilities",
+      "can I use online resources in SASTRA library",
+      "what is available in central library SASTRA"
+    ],
+    "answer": "SASTRA’s central library, Saraswathi Sadan, has study areas, an audio-visual room, internet access and reprographic facilities. It also provides access to library books and online databases. Check the library directly for current access, borrowing and timing rules.",
+    "category": "campus",
+    "source": "Saraswathi Sadan — SASTRA Central Library (official)",
+    "source_url": "https://law.sastra.edu/index.php/infrastructure.html",
+    "source_type": "official",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "active",
+    "last_verified": "2026-07-28",
+    "contact_fallback": null
+  },
+  {
+    "id": "sastra_research_central_facilities",
+    "questions": [
+      "what research facilities does SASTRA have",
+      "SASTRA central research facilities",
+      "does SASTRA have high performance computing",
+      "research equipment available at SASTRA",
+      "SASTRA research labs and facilities"
+    ],
+    "answer": "SASTRA lists central research facilities that are available to its students and faculty, including advanced scientific equipment, high-performance computing systems, research laboratories and specialised engineering tools. Access to a particular facility depends on its current rules and approvals, so ask the relevant school or facility before planning work.",
+    "category": "academics",
+    "source": "Central Facilities — SASTRA official",
+    "source_url": "https://sastra.edu/research/central-facilities.html",
+    "source_type": "official",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "active",
+    "last_verified": "2026-07-28",
+    "contact_fallback": null
+  },
+  {
+    "id": "sastra_minor_specialisation_fee",
+    "questions": [
+      "is there an extra fee for minor specialization",
+      "minor specialization fee SASTRA",
+      "do I have to pay separately for BTech minor",
+      "is minor specialization included in tuition fee",
+      "cost of minor specialization at SASTRA"
+    ],
+    "answer": "SASTRA’s 2026 admissions FAQ says there is no separate course fee for a B.Tech. minor specialisation; it is included in the tuition fee. Check the current fee circular before making a payment decision.",
+    "category": "finance",
+    "source": "Admissions 2026 FAQ — SASTRA official",
+    "source_url": "https://sastra.edu/admissions",
+    "source_type": "official",
+    "effective_from": "2026-01-01",
+    "valid_until": "2027-07-31",
+    "status": "active",
+    "last_verified": "2026-07-28",
+    "contact_fallback": "admissions@sastra.edu"
+  },
+  {
+    "id": "sastra_other_off_campus_centre",
+    "questions": [
+      "does SASTRA have another off campus centre",
+      "other off campus centre of SASTRA",
+      "is this location an official SASTRA centre",
+      "does SASTRA operate any other centres",
+      "how can I verify a SASTRA off campus centre"
+    ],
+    "answer": "SASTRA’s 2026 admissions FAQ says it does not have any other off-campus centre. If someone represents another location as a SASTRA centre, verify it directly with the Office of Admissions before relying on the claim.",
+    "category": "admissions",
+    "source": "Admissions 2026 FAQ — SASTRA official",
+    "source_url": "https://sastra.edu/admissions",
+    "source_type": "official",
+    "effective_from": "2026-01-01",
+    "valid_until": "2027-07-31",
+    "status": "active",
+    "last_verified": "2026-07-28",
+    "contact_fallback": "admissions@sastra.edu"
+  },
+  {
+    "id": "unify_overview",
+    "questions": [
+      "what is UniFy",
+      "what is available in UniFy",
+      "what can I do in UniFy",
+      "UniFy features",
+      "why should I use UniFy"
+    ],
+    "answer": "UniFy brings together fresher tools in one place: Campus Map, academic information, Resource Bot, Know Your Professor, Mess Menu, Community Page, timetable, Placement and GATE preparation, Career Roadmap, and Club Hub. Academic information is also available through SWI once you receive your register number and password.",
+    "category": "unify",
+    "source": "UniFy product capabilities — supplied by UniFy team",
+    "source_url": "local://data/product_sources/unify_capabilities_2026-07-28.md",
+    "source_type": "product_owner",
+    "effective_from": "2026-07-28",
+    "valid_until": null,
+    "status": "active",
+    "last_verified": "2026-07-28",
+    "contact_fallback": null
+  }
+]

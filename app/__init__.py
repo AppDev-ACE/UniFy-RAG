@@ -1,0 +1,1 @@
+"""SASTRA Freshers Assistant service."""

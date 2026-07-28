@@ -1,0 +1,844 @@
+{
+  "records": 307,
+  "active": 84,
+  "needs_review": 209,
+  "superseded": 14,
+  "duplicate_answer_groups": [],
+  "historical_duplicate_answer_groups": [
+    [
+      "legacy_148_does_ragging_take_place_inside_the_campus",
+      "legacy_149_whether_ragging_is_there_in_sastra"
+    ],
+    [
+      "legacy_196_where_do_we_get_information_regarding_the_events_and_h",
+      "legacy_265_where_do_we_sign_up_for_events"
+    ],
+    [
+      "legacy_197_what_are_cia_exams",
+      "legacy_198_is_there_internal_exams_in_sastra"
+    ],
+    [
+      "legacy_201_will_i_be_grouped_on_basis_of_department_from_1st_seme",
+      "legacy_202_whether_from_the_first_semester_i_will_start_from_my_c"
+    ],
+    [
+      "legacy_215_will_they_serve_non_vegetarian",
+      "legacy_272_can_i_eat_chicken_in_hostel",
+      "legacy_273_is_meat_allowed_in_campus",
+      "legacy_274_what_food_is_served_in_hostel",
+      "legacy_275_whether_non_veg_foods_are_available_in_canteens"
+    ]
+  ],
+  "issues": [
+    {
+      "severity": "warning",
+      "id": "legacy_028_when_do_new_students_get_access_to_the_student_web_int",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_032_what_are_the_mess_timings_for_breakfast_lunch_snacks_a",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_111_temple_kovil_in_sastra",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_112_daksh_fest_technical_events_technical_cultural_fest_in",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_113_kuruksastra_fest_in_sastra_enjoying_fests_in_sastra",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_114_address_location_and_where_is_the_thanjavur_main_campu",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_115_address_location_and_where_is_the_kumbakonam_campus_sr",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_116_address_location_and_where_is_the_chennai_campus",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_117_what_is_the_hostel_timings_for_girls",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_118_what_is_the_hostel_timings_for_boys",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_119_what_is_the_hostel_timings",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_120_sastra_land_issue",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_121_does_sastra_have_any_other_off_campus_centre",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_122_is_hostel_facility_available_hostel_eligiblity",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_123_what_about_transportation_facility",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_124_send_me_contact_details",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_125_what_is_the_nirf_rank_of_sastra",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_126_what_is_the_naac_of_sastra",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_127_where_can_i_register_wifi_for_my_laptop",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_128_what_is_the_requirement_to_be_a_hosteller_what_is_the_",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_129_how_to_download_bonafide_certificate",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_130_what_is_the_semester_abroad_program",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_131_how_to_approach_companies_for_internship_during_second",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_132_can_ug_students_conduct_research_in_campus",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_133_do_sastra_provide_any_scholarship",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_134_what_things_are_allowed_into_the_library",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_135_how_to_see_my_attendance",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_136_how_to_get_a_cub_account",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_137_is_wifi_facility_available_in_vinaya_block",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_138_is_there_any_club_to_learn_coding_if_yes_how_to_join",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_139_how_can_i_change_my_contact_info_in_swi",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_140_where_do_i_find_reference_books",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_141_in_which_semester_will_the_placements_take_place",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_142_who_are_the_faculty_mentors_and_when_can_we_meet_them",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_143_is_an_iron_box_allowed_in_the_hostel",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_144_where_can_i_view_the_academic_calendar",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_145_where_can_we_meet_our_faculty_for_doubt_clearance_and_",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_146_how_to_avail_sports_facilities_on_campus",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_147_if_we_have_arrear_on_what_basis_will_we_be_able_to_cle",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_148_does_ragging_take_place_inside_the_campus",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_150_how_are_fee_payments_done",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_151_is_it_mandatory_to_have_a_city_union_bank_cub_account",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_152_where_can_we_get_passport_size_photos_near_sastra",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_153_what_is_the_procedure_to_get_outing_permission_for_gir",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_154_are_day_scholars_allowed_inside_the_campus_on_holidays",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_155_is_there_any_dress_code_in_the_campus",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_157_what_is_the_procedure_by_which_our_college_calculates_",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_158_where_can_i_buy_stationery_on_the_sastra_campus",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_159_is_there_a_shop_near_tifac_core_for_stationery",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_160_any_place_to_avail_courier_services",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_161_how_much_fine_will_be_imposed_if_i_fail_to_return_my_l",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_162_are_dayscholars_allowed_to_park_their_vehicles_inside_",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_163_opening_and_closing_time_of_library",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_164_are_there_any_places_to_study",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_165_are_cycles_available_to_navigate_within_the_campus_is_",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_166_where_should_one_go_to_ask_for_permission_of_leave",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_167_where_is_the_hospital_located",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_168_are_there_any_restrictions_on_the_number_of_clubs_i_ca",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_169_how_can_i_contact_the_clubs_that_i_want_to_join",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_170_where_can_i_buy_essentials_from",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_171_are_there_any_pre_requisites_to_join_a_technical_club",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_172_will_my_academics_get_affected_if_i_join_a_club",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_173_is_it_necessary_to_join_a_club",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_174_what_are_the_clubs_available_for_volunteering_work",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_175_are_day_scholars_allowed_to_enter_the_hostel",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_176_what_is_the_process_of_getting_into_a_club",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_177_what_are_the_perks_of_joining_a_club",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_179_are_there_sports_facilities_within_the_hostels",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_181_whether_atms_are_available_in_campus",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_182_whether_atms_are_available_in_hostel",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_184_will_there_be_any_store_available_inside_hostel",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_185_where_is_the_research_building_and_what_is_its_name",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_186_will_the_classes_be_conducted_during_the_fest",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_187_where_is_temple_in_sastra",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_188_do_i_need_to_be_in_a_club_to_participate_in_an_event",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_189_till_what_time_can_the_day_scholars_stay_for_the_event",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_190_who_organizes_all_these_events",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_192_how_are_the_rooms_maintained",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_194_which_one_do_i_need_to_focus_on_more_cgpa_or_skillset",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_195_is_it_possible_to_select_my_roommates",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_196_where_do_we_get_information_regarding_the_events_and_h",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_197_what_are_cia_exams",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_199_how_is_the_end_semester_mark_calculated",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_200_what_are_the_other_courses_offered_apart_from_core_sub",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_201_will_i_be_grouped_on_basis_of_department_from_1st_seme",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_203_how_the_classes_starts_for_the_first_semester",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_204_am_i_allowed_to_visit_other_department_blocks",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_205_does_college_provide_any_subject_books_for_all_semeste",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_206_what_is_cbcs",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_207_is_attending_all_the_classes_mandatory",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_208_which_is_the_best_place_to_hangout_with_friends_along_",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_209_are_there_maps_to_traverse_inside_the_college_and_any_",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_210_can_we_bring_laptop_to_classes",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_211_what_is_mess_fees",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_212_can_a_dayscholar_student_request_for_hostel_accommodat",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_213_what_is_the_cgpa_eligibility_for_sliding_after_1st_yea",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_214_what_are_the_events_that_are_conducted_in_sastra",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_216_what_is_the_hostel_lodging_fee_for_an_ac_room_at_sastr",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_217_who_are_the_chancellor_vice_chancellor_and_registrar_o",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_218_who_are_the_top_recruiters_that_visit_sastra_for_campu",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_219_how_does_the_grading_system_work_at_sastra",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_220_what_happens_if_a_student_gets_an_f_grade",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_221_what_is_the_dean_s_merit_list",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_222_what_are_the_canteens_available_at_campus",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_223_can_students_use_the_central_library_digitally",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_224_what_medical_facilities_are_available_at_sastra",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_225_does_sastra_have_an_indoor_sports_stadium",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_226_what_outdoor_sports_facilities_are_available",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_227_what_is_the_vision_of_sastra",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_228_what_is_the_mission_of_sastra",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_229_what_is_the_ks_upahaar_initiative",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_230_what_is_knowledge_connect_at_sastra",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_231_what_is_the_semester_abroad_programme_sap",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_232_what_is_the_accelerated_credit_registration_system_acr",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_233_what_is_anukul_shikshan_at_sastra",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_234_how_does_sastra_support_advanced_learners",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_235_what_are_the_key_contact_emails_for_sastra",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_236_where_can_i_find_the_campus_map_of_sastra",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_237_whether_placements_are_common_on_all_the_three_campus",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_238_in_which_semester_are_placements_conducted",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_239_is_it_mandatory_to_have_a_cub_account",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_240_where_is_the_registrar_office_at_sastra",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_241_can_a_hosteller_shift_to_day_scholar",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_242_is_there_a_courier_service_at_sastra",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_243_will_classes_be_held_during_fest_days",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_244_where_can_i_buy_reference_books",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_245_opening_and_closing_time_of_library",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_246_how_to_join_a_club_at_sastra",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_247_how_to_meet_faculty_for_doubt_clearance",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_248_how_to_avail_sports_facilities_at_sastra",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_249_are_there_sports_facilities_in_hostels_for_girls",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_250_what_places_are_there_to_study_on_campus",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_251_what_are_the_best_hangout_spots_at_sastra",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_252_can_i_do_research_as_a_ug_student",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_253_how_to_approach_companies_for_internship",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_254_does_sastra_provide_scholarships",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_255_what_things_are_allowed_in_the_library",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_256_how_to_change_contact_info_in_swi",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_257_is_wifi_available_in_vinaya_block",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_258_how_to_register_wifi_for_laptop_at_sastra",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_259_how_is_arrear_exam_conducted",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_260_how_are_fee_payments_done_at_sastra",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_261_what_is_the_library_fine_for_late_return",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_262_how_to_get_leave_permission_at_sastra",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_263_are_there_restrictions_on_number_of_clubs",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_264_can_i_change_my_hostel_room",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_266_do_i_need_to_be_in_a_club_to_participate_in_events",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_267_who_organizes_events_at_sastra",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_268_till_what_time_can_day_scholars_stay_for_events",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_269_does_the_college_provide_books",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_270_can_i_visit_other_department_blocks",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_271_can_a_dayscholar_request_hostel_accommodation",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_276_what_is_the_hostel_fees_structure_and_room_charges",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_277_who_is_the_vice_chancellor_of_sastra",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_278_can_i_change_my_branch_after_first_year",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_279_what_canteens_are_available",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_280_what_is_the_description_of_the_thanjavur_campus_at_sas",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_281_what_is_the_description_of_the_kumbakonam_campus_at_sa",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_282_what_is_the_description_of_the_chennai_campus_at_sastr",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_283_how_many_campuses_are_there_in_sastra_are_there_campus",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_284_is_there_any_app_for_checking_results_tracking_attenda",
+      "issue": "fewer than 4 question phrasings"
+    },
+    {
+      "severity": "warning",
+      "id": "legacy_287_is_there_a_separate_course_fee_for_minor_specializatio",
+      "issue": "fewer than 4 question phrasings"
+    }
+  ]
+}
