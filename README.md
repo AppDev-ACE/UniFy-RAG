@@ -33,7 +33,7 @@ rules). They can never enter the index.
 python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
 python scripts/migrate_corpus.py
-# Review and activate sourced records in data/corpus.json.
+# The default production build includes all trusted, non-superseded records.
 .venv/bin/python scripts/build_index.py
 .venv/bin/uvicorn app.main:app --reload
 ```

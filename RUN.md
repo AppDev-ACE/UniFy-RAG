@@ -23,8 +23,10 @@ is not present in the local cache:
 .venv/bin/python scripts/build_index.py
 ```
 
-The build only includes active, sourced records. Current output should say
-`92 records` and `467 phrasings`.
+The default production build includes all trusted, non-superseded records.
+Current output should say `301 records` and `850 phrasings`. Use
+`--official-only` only when you explicitly want to exclude trusted legacy
+records.
 
 ### Test every legacy answer locally
 
@@ -45,34 +47,25 @@ without the flag:
 .venv/bin/python scripts/build_index.py
 ```
 
-### Include owner-approved legacy answers in UniFy production
+### Trusted legacy answers in production
 
-The UniFy project owner has approved the non-superseded legacy corpus for
-production display. Build that production index with:
-
-```bash
-.venv/bin/python scripts/build_index.py --include-trusted-legacy
-```
-
-Those answers return `"verification_status": "trusted_legacy"`. UniFy may
-display them, but should keep their source/provenance label; they are distinct
-from `verified` answers backed by an official SASTRA source. Superseded records
-remain excluded.
+The default build includes the project-owner-approved, non-superseded legacy
+corpus. These records return `"verification_status": "trusted_legacy"` so the
+client can retain their provenance label. Superseded records remain excluded.
 
 ### Deploy or update the server
 
 `data/index/` is a generated directory and is deliberately not committed to
 Git. After every code or corpus deployment, rebuild the index on the server
-before restarting Uvicorn. To include the project-owner-approved legacy
-records (including the non-vegetarian-food answer), run:
+before restarting Uvicorn. The default command includes trusted legacy records
+(including the non-vegetarian-food answer):
 
 ```bash
-.venv/bin/python scripts/build_index.py --include-trusted-legacy
+.venv/bin/python scripts/build_index.py
 ```
 
-Without that flag, only officially sourced `active` records are available to
-the API. Do not use `--include-needs-review` on a deployed server; it is local
-testing only.
+Do not use `--include-needs-review` on a deployed server; it is local testing
+only.
 
 ## 2. Start the API
 

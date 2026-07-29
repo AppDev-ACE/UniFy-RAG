@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build a local question index. Only fully verified active records are included."""
+"""Build the production question index from all trusted, non-superseded records."""
 from __future__ import annotations
 import argparse, json, sys
 from datetime import date
@@ -37,13 +37,14 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     group = parser.add_mutually_exclusive_group()
     group.add_argument("--include-needs-review", action="store_true", help="LOCAL TESTING ONLY: index unsourced legacy records with a visible warning")
-    group.add_argument("--include-trusted-legacy", action="store_true", help="Index project-owner-approved legacy records for production with trusted_legacy provenance")
+    group.add_argument("--official-only", action="store_true", help="Exclude trusted legacy records and index only officially sourced active records")
     args = parser.parse_args()
+    include_trusted_legacy = not args.official_only and not args.include_needs_review
     if not CORPUS.exists():
         sys.exit("Corpus missing. Run python scripts/migrate_corpus.py first.")
     records = json.loads(CORPUS.read_text()); today = date.today(); active = []; skipped = []
     for record in records:
-        ok, reason, stale = valid(record, today, args.include_needs_review, args.include_trusted_legacy)
+        ok, reason, stale = valid(record, today, args.include_needs_review, include_trusted_legacy)
         if ok:
             if record.get("status") == "needs_review":
                 if args.include_needs_review:
@@ -52,7 +53,7 @@ def main():
                               "source_url": record.get("source_url") or "local://data/corpus.json",
                               "last_verified": record.get("last_verified") or "Not verified",
                               "test_warning": "TEST MODE ONLY — this legacy answer has not been verified against an official source. Do not use it as policy or publish it."}
-                elif args.include_trusted_legacy:
+                elif include_trusted_legacy:
                     record = {**record, "trusted_legacy": True,
                               "source": record.get("source") or "Trusted legacy corpus — approved by UniFy project owner",
                               "source_url": record.get("source_url") or "local://data/product_sources/trusted_legacy_approval_2026-07-28.md",
@@ -71,14 +72,14 @@ def main():
     (OUT / "vectors.npy").unlink(missing_ok=True)
     (OUT / "records.json").write_text(json.dumps(active, ensure_ascii=False))
     (OUT / "questions.json").write_text(json.dumps(questions, ensure_ascii=False))
-    (OUT / "build_report.json").write_text(json.dumps({"built_on": today.isoformat(), "records": len(active), "question_phrasings": len(questions), "test_mode_include_needs_review": args.include_needs_review, "include_trusted_legacy": args.include_trusted_legacy, "skipped": skipped}, indent=2))
+    (OUT / "build_report.json").write_text(json.dumps({"built_on": today.isoformat(), "records": len(active), "question_phrasings": len(questions), "test_mode_include_needs_review": args.include_needs_review, "include_trusted_legacy": include_trusted_legacy, "skipped": skipped}, indent=2))
     try:
         import numpy as np
         from sentence_transformers import SentenceTransformer
         model = SentenceTransformer("BAAI/bge-small-en-v1.5")
         vectors = model.encode([x["question"] for x in questions], normalize_embeddings=True, show_progress_bar=True)
         np.save(OUT / "vectors.npy", vectors)
-        mode = " (TEST MODE: unverified legacy records included)" if args.include_needs_review else " (TRUSTED LEGACY: owner-approved records included)" if args.include_trusted_legacy else ""
+        mode = " (TEST MODE: unverified legacy records included)" if args.include_needs_review else " (TRUSTED LEGACY: owner-approved records included)" if include_trusted_legacy else ""
         print("Built hybrid dense + sparse index", len(active), "records", len(questions), "phrasings" + mode)
     except Exception as exc:
         # A missing/offline model must never prevent the conservative BM25
