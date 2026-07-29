@@ -1,7 +1,7 @@
 import json, tempfile, unittest
 from pathlib import Path
 from app.retrieval import Retriever, normalize
-from app.safety import mandatory_route
+from app.safety import abstention, mandatory_route
 
 class RetrievalTests(unittest.TestCase):
     def setUp(self):
@@ -25,5 +25,9 @@ class RetrievalTests(unittest.TestCase):
         self.assertEqual(len({x["record"]["id"] for x in self.r.search("hostel attendance", limit=3)}), len(self.r.search("hostel attendance", limit=3)))
     def test_ragging_is_never_retrieved(self): self.assertEqual(mandatory_route("I need to report ragging")[0], "ragging")
     def test_personal_marks_are_never_retrieved(self): self.assertEqual(mandatory_route("what are my marks")[0], "general")
+    def test_unknown_question_routes_to_campus_peer_support(self):
+        response = abstention("hostel")
+        self.assertEqual(response["contacts"][0]["label"], "Campus seniors or fresher volunteers")
+        self.assertNotIn("email", response["contacts"][0])
 
 if __name__ == "__main__": unittest.main()

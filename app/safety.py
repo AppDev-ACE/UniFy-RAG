@@ -11,6 +11,13 @@ CONTACTS = {
                 {"label": "SASTRA website", "url": "https://www.sastra.edu"}],
 }
 
+# Unknown general questions should be handled by the people available to help
+# freshers on campus, not by sending a student through an office email chain.
+PEER_SUPPORT = [{
+    "label": "Campus seniors or fresher volunteers",
+    "note": "Please contact the seniors or volunteers available on campus for help with this question.",
+}]
+
 HIGH_RISK_PATTERNS = {
     "ragging": r"\b(ragging|ragged|harass(?:ment|ed)?|bully(?:ing|ied)?)\b",
     "medical": r"\b(suicid(?:e|al)|self[ -]?harm|panic attack|overdose|medical emergency|want to die)\b",
@@ -32,9 +39,15 @@ def mandatory_route(query: str):
     return None
 
 def abstention(category: str | None = None, message: str | None = None):
+    if message is None:
+        return {
+            "status": "abstained",
+            "message": "I don't have an answer for that. Please contact the seniors or volunteers available on campus for help.",
+            "contacts": PEER_SUPPORT,
+        }
     category = category if category in CONTACTS else "general"
     return {
         "status": "abstained",
-        "message": message or "I don't have a verified answer for that. Please contact the appropriate university office or check the SASTRA website.",
+        "message": message,
         "contacts": CONTACTS[category],
     }
