@@ -59,6 +59,21 @@ display them, but should keep their source/provenance label; they are distinct
 from `verified` answers backed by an official SASTRA source. Superseded records
 remain excluded.
 
+### Deploy or update the server
+
+`data/index/` is a generated directory and is deliberately not committed to
+Git. After every code or corpus deployment, rebuild the index on the server
+before restarting Uvicorn. To include the project-owner-approved legacy
+records (including the non-vegetarian-food answer), run:
+
+```bash
+.venv/bin/python scripts/build_index.py --include-trusted-legacy
+```
+
+Without that flag, only officially sourced `active` records are available to
+the API. Do not use `--include-needs-review` on a deployed server; it is local
+testing only.
+
 ## 2. Start the API
 
 For testing on the same computer:
@@ -117,10 +132,11 @@ The response always has one of these statuses:
 | `abstained` | Render `message` and the human contact options. Do not replace this with a guessed answer. |
 
 Automatic `answered` results are intentionally disabled until the project has a
-real labelled golden set and calibrated thresholds. Before calibration, the
-service shows a conservative `clarify` result whenever it has a relevant
-verified candidate, or `abstained` when it does not; this is expected and safer
-for testing.
+real labelled golden set and calibrated thresholds. An exact normalised match
+to one indexed question is returned directly, because it is a lookup of the
+reviewed phrase rather than a fuzzy retrieval decision. Before calibration,
+other relevant candidates return `clarify`, or `abstained` when there is no
+relevant candidate.
 
 When a student taps a suggestion, use its `pair_id` exactly once:
 

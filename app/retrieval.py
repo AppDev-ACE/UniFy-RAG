@@ -31,6 +31,12 @@ class Retriever:
     def __init__(self, index_dir: Path):
         self.records = json.loads((index_dir / "records.json").read_text())
         self.questions = json.loads((index_dir / "questions.json").read_text())
+        # An exact normalised question is a direct lookup of a reviewed
+        # phrasing, not a fuzzy retrieval decision. Keep all matches because
+        # duplicate phrasings must still be treated as ambiguous.
+        self.exact_questions = defaultdict(list)
+        for index, item in enumerate(self.questions):
+            self.exact_questions[normalize(item["question"])].append(index)
         self.tokens = [normalize(item["question"]).split() for item in self.questions]
         self.df = Counter(token for doc in self.tokens for token in set(doc))
         self.avgdl = sum(map(len, self.tokens)) / max(len(self.tokens), 1)
@@ -50,6 +56,22 @@ class Retriever:
             except Exception:
                 # Sparse retrieval remains safe and usable if an optional model is absent.
                 self.dense = self.model = None
+
+    def exact_match(self, query: str):
+        """Return one reviewed record for an unambiguous exact question.
+
+        Matching uses the same normalisation as the hybrid retriever, so
+        casing and punctuation do not make the API behave differently from
+        the terminal tester. If wording belongs to more than one record,
+        return ``None`` and retain the normal clarification flow.
+        """
+        candidates = self.exact_questions.get(normalize(query), [])
+        record_indexes = {self.questions[index]["record_index"] for index in candidates}
+        if len(record_indexes) != 1:
+            return None
+        index = candidates[0]
+        return {"record": self.records[self.questions[index]["record_index"]],
+                "question": self.questions[index]["question"]}
 
     def _bm25(self, query: str):
         q = normalize(query).split(); n = len(self.tokens); scores = []

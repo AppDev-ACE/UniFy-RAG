@@ -63,22 +63,30 @@ def ask(request: AskRequest):
     if forced:
         response = abstention(*forced)
     else:
-        matches = retriever().search(request.query)
-        if not matches or matches[0]["score"] < TAU_LOW:
-            category = matches[0]["record"].get("category") if matches else None
-            response = abstention(category)
-        elif matches[0]["score"] < TAU_HIGH:
-            # Do not pad a clarification with weakly related records merely
-            # to reach three suggestions.
-            minimum_suggestion_score = max(0.12, matches[0]["score"] * 0.35)
-            response = {"status": "clarify", "suggestions": [
-                {"pair_id": x["record"]["id"], "question": x["question"],
-                 "verification_status": verification_status(x["record"])}
-                for x in matches[:3] if x["score"] >= minimum_suggestion_score
-            ]}
+        searcher = retriever()
+        # Terminal testing lets a student select a matching stored question.
+        # Resolve an unambiguous exact phrasing here too, so POST /ask has the
+        # same direct-answer behaviour without relaxing fuzzy-match safety.
+        exact = searcher.exact_match(request.query)
+        if exact:
+            response = answer_payload(exact["record"], 1.0)
         else:
-            x = matches[0]
-            response = answer_payload(x["record"], x["score"])
+            matches = searcher.search(request.query)
+            if not matches or matches[0]["score"] < TAU_LOW:
+                category = matches[0]["record"].get("category") if matches else None
+                response = abstention(category)
+            elif matches[0]["score"] < TAU_HIGH:
+                # Do not pad a clarification with weakly related records merely
+                # to reach three suggestions.
+                minimum_suggestion_score = max(0.12, matches[0]["score"] * 0.35)
+                response = {"status": "clarify", "suggestions": [
+                    {"pair_id": x["record"]["id"], "question": x["question"],
+                     "verification_status": verification_status(x["record"])}
+                    for x in matches[:3] if x["score"] >= minimum_suggestion_score
+                ]}
+            else:
+                x = matches[0]
+                response = answer_payload(x["record"], x["score"])
     log({"event_id": str(uuid.uuid4()), "at": datetime.now(timezone.utc).isoformat(), "session_id": request.session_id, "query": request.query, "outcome": response["status"], "pair_id": response.get("pair_id"), "latency_ms": round((time.perf_counter()-started)*1000, 2)})
     return response
 

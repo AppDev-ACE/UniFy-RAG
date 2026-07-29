@@ -15,6 +15,12 @@ class RetrievalTests(unittest.TestCase):
     def tearDown(self): self.temp.cleanup()
     def test_abbreviation_is_expanded(self): self.assertIn("city union bank", normalize("CUB account"))
     def test_keyword_retrieval_returns_right_pair(self): self.assertEqual(self.r.search("biometric hostel attendance")[0]["record"]["id"], "hostel_biometric")
+    def test_exact_match_uses_normalisation(self):
+        match = self.r.exact_match("HOSTEL biometric attendance timing?")
+        self.assertIsNotNone(match)
+        self.assertEqual(match["record"]["id"], "hostel_biometric")
+    def test_exact_match_rejects_unknown_question(self):
+        self.assertIsNone(self.r.exact_match("tell me something unrelated"))
     def test_results_are_unique_records(self):
         self.assertEqual(len({x["record"]["id"] for x in self.r.search("hostel attendance", limit=3)}), len(self.r.search("hostel attendance", limit=3)))
     def test_ragging_is_never_retrieved(self): self.assertEqual(mandatory_route("I need to report ragging")[0], "ragging")
