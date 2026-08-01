@@ -1,8 +1,15 @@
 import unittest
 from unittest.mock import patch
+import app.main as main
 from app.main import AskRequest, FeedbackRequest, ask, feedback, get_selected_pair, verification_status
 
 class ApiContractTests(unittest.TestCase):
+    def setUp(self):
+        # /ask caches by normalised query text; several tests below reuse the
+        # same query with different mocked outcomes, which the cache would
+        # otherwise defeat by serving an earlier test's response.
+        main._response_cache.clear()
+
     def test_ask_falls_back_to_verbatim_answer_when_llm_is_unreachable(self):
         # Forced (not relying on Ollama being absent from the environment --
         # a dev machine with Ollama running would make this test's outcome
