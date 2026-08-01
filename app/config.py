@@ -81,11 +81,18 @@ LLM_VETO_OVERRIDE_SCORE = float(os.environ.get("LLM_VETO_OVERRIDE_SCORE", "0.42"
 # (The same traffic on qwen2.5:0.5b was worse: p90 21.1s, 11.3% over 20s.
 # The tail is the call count, not the model.)
 #
-# Deliberately below the client's 20s and not equal to it: the budget only
-# bounds Ollama time, and a response still has to be built and cross the
-# network to a phone. Spending the client's entire allowance server-side
-# would race the very timeout this exists to prevent.
-LLM_LATENCY_BUDGET_SECONDS = float(os.environ.get("LLM_LATENCY_BUDGET_SECONDS", "15"))
+# 20s matches the client's own limit, so the LLM keeps every second it can
+# actually use and the fallback fires only when the client would otherwise
+# have given up. Server-side overhead past the budget measured ~18ms, so
+# what is left over is the response's trip to the phone.
+#
+# The same 144 queries, bucketed, are why the exact value matters less than
+# it looks: 89.6% finish under 15s and 7.6% run past 20s, with only 2.8%
+# landing in between. The distribution is bimodal, so a query either
+# comfortably beats any budget in this range or overruns all of them -- 15s
+# and 20s differ for about four queries in 144, and only in whether those
+# four are LLM-phrased or verbatim.
+LLM_LATENCY_BUDGET_SECONDS = float(os.environ.get("LLM_LATENCY_BUDGET_SECONDS", "20"))
 
 OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "http://127.0.0.1:11434")
 OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "qwen2.5:3b")
