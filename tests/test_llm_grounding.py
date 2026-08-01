@@ -1,8 +1,9 @@
 import unittest
 from unittest.mock import Mock, patch
 import requests
-from app.llm import (REWORD_SYSTEM_PROMPT, _echoes_correction, _has_dangling_clause,
-                     _is_bare_enumeration, _names_drifted, disambiguate_and_answer,
+from app.llm import (REWORD_SYSTEM_PROMPT, _call_ollama, _echoes_correction,
+                     _has_dangling_clause, _is_bare_enumeration, _names_drifted,
+                     budget_spent, disambiguate_and_answer, latency_budget,
                      synthesize_answer)
 
 MATCH = {"record": {"id": "x", "answer": "The bus fare to Thanjavur is around 16 rupees."}}
@@ -600,6 +601,85 @@ class DisambiguationTests(unittest.TestCase):
         # topic is settled and only the wording failed.
         self.assertEqual(post.call_count, 3)
         self.assertEqual(reword_calls(post), 1)
+
+class LatencyBudgetTests(unittest.TestCase):
+    """One question's whole allowance of Ollama time. A clarify-tier query
+    spends 4-6 calls in series, the Flutter client gives up at 20s, and
+    7.6% of live cache-miss queries were overrunning it -- so past the
+    budget the student gets the retrieved record verbatim instead of a
+    timeout."""
+
+    def test_expired_budget_serves_the_top_record_verbatim_not_an_abstention(self):
+        # The whole point: a human-reviewed record the index already holds
+        # beats "I don't have an answer for that".
+        with patch("app.llm.requests.post") as post:
+            with latency_budget(0):
+                result = disambiguate_and_answer("when is orientation", [CANDIDATE_A, CANDIDATE_B])
+        self.assertIsNotNone(result)
+        chosen, text = result
+        self.assertIs(chosen, CANDIDATE_A)
+        self.assertIsNone(text)          # verbatim -- no LLM wording
+        post.assert_not_called()         # and not one call was started
+
+    def test_expired_budget_still_refuses_a_shape_mismatched_record(self):
+        # Running out of time is no reason to reintroduce the bug this
+        # module was just fixed for: a yes/no-shaped record must not be
+        # served raw to a student who asked "how many". The next candidate
+        # is used instead.
+        names_them = {"score": 0.59, "question": "which hostels for first years",
+                      "record": {"id": "h", "answer": "The boys' hostels are AHALYA and ARUNDHATHI."}}
+        with patch("app.llm.requests.post"):
+            with latency_budget(0):
+                chosen, text = disambiguate_and_answer("How many hostels are there for boys ?",
+                                                        [POLAR_CANDIDATE, names_them])
+        self.assertIs(chosen, names_them)
+        self.assertIsNone(text)
+
+    def test_expired_budget_abstains_when_every_record_is_shape_mismatched(self):
+        with patch("app.llm.requests.post"):
+            with latency_budget(0):
+                self.assertIsNone(disambiguate_and_answer("How many hostels are there for boys ?",
+                                                           [POLAR_CANDIDATE]))
+
+    def test_budget_expiring_is_not_confused_with_ollama_being_down(self):
+        # Both surface as UNAVAILABLE from the ladder and they mean opposite
+        # things: out of time serves the record, a dead model abstains.
+        with patch("app.llm.requests.post", side_effect=requests.ConnectionError("ollama died")):
+            self.assertIsNone(disambiguate_and_answer("when is orientation", [WEAK_A, WEAK_B]))
+
+    def test_synthesize_answer_falls_back_to_verbatim_when_the_budget_is_gone(self):
+        with patch("app.llm.requests.post") as post:
+            with latency_budget(0):
+                self.assertIsNone(synthesize_answer("bus fare to thanjavur", MATCH))
+        post.assert_not_called()
+
+    def test_a_live_budget_does_not_interfere(self):
+        rephrase = "A two-day orientation runs on August 3 and 4, 2026."
+        with patch("app.llm.requests.post", return_value=mock_response(rephrase)):
+            with latency_budget(30):
+                chosen, text = disambiguate_and_answer("when is orientation", [CANDIDATE_A, CANDIDATE_B])
+        self.assertIs(chosen, CANDIDATE_A)
+        self.assertEqual(text, rephrase)
+
+    def test_no_budget_in_force_leaves_behaviour_unchanged(self):
+        # The terminal tester and scripts/ call in without a budget.
+        self.assertFalse(budget_spent())
+        rephrase = "A two-day orientation runs on August 3 and 4, 2026."
+        with patch("app.llm.requests.post", return_value=mock_response(rephrase)):
+            chosen, text = disambiguate_and_answer("when is orientation", [CANDIDATE_A, CANDIDATE_B])
+        self.assertEqual(text, rephrase)
+
+    def test_per_call_timeout_shrinks_to_what_is_left_of_the_budget(self):
+        # A call must not be able to outlive the budget it started inside.
+        with patch("app.llm.requests.post", return_value=mock_response("ok")) as post:
+            with latency_budget(0.5):
+                _call_ollama("system", "user")
+        self.assertLessEqual(post.call_args.kwargs["timeout"], 0.5)
+
+    def test_budget_is_per_request_and_does_not_leak(self):
+        with latency_budget(0):
+            self.assertTrue(budget_spent())
+        self.assertFalse(budget_spent())
 
 class CorrectionEchoTests(unittest.TestCase):
     """A retry that recites the correction's own list back instead of

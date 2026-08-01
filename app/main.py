@@ -6,7 +6,7 @@ from typing import Literal
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 from app.config import INDEX_DIR, LOG_DIR, TAU_HIGH, TAU_LOW
-from app.llm import disambiguate_and_answer, synthesize_answer
+from app.llm import budget_spent, disambiguate_and_answer, latency_budget, synthesize_answer
 from app.phrasing import strip_polar_prefix
 from app.retrieval import Retriever, normalize
 from app.safety import abstention, mandatory_route
@@ -93,7 +93,7 @@ def health():
 
 @app.post("/ask")
 def ask(request: AskRequest):
-    started = time.perf_counter(); forced = mandatory_route(request.query)
+    started = time.perf_counter(); forced = mandatory_route(request.query); timed_out = False
     if forced:
         response = abstention(*forced)
     else:
@@ -103,10 +103,19 @@ def ask(request: AskRequest):
             response = cached
             log({"event_id": str(uuid.uuid4()), "at": datetime.now(timezone.utc).isoformat(), "session_id": request.session_id, "query": request.query, "outcome": response["status"], "pair_id": response.get("pair_id"), "answer_mode": response.get("answer_mode"), "latency_ms": round((time.perf_counter()-started)*1000, 2), "cache_hit": True})
             return response
-        response = _resolve(request)
+        # Everything the LLM does for this question shares one wall-clock
+        # allowance. Past it, the student is served the retrieved record
+        # verbatim rather than waiting on a rephrase the client has already
+        # given up on (see app.config.LLM_LATENCY_BUDGET_SECONDS).
+        with latency_budget():
+            response = _resolve(request)
+            timed_out = budget_spent()
+        # A budget-capped answer is cached like any other: it is a correct,
+        # human-reviewed record, and re-running a chain that just overran is
+        # the last thing the next student asking it needs.
         if len(_response_cache) < _CACHE_MAX_ENTRIES:
             _response_cache[cache_key] = response
-    log({"event_id": str(uuid.uuid4()), "at": datetime.now(timezone.utc).isoformat(), "session_id": request.session_id, "query": request.query, "outcome": response["status"], "pair_id": response.get("pair_id"), "answer_mode": response.get("answer_mode"), "latency_ms": round((time.perf_counter()-started)*1000, 2)})
+    log({"event_id": str(uuid.uuid4()), "at": datetime.now(timezone.utc).isoformat(), "session_id": request.session_id, "query": request.query, "outcome": response["status"], "pair_id": response.get("pair_id"), "answer_mode": response.get("answer_mode"), "latency_ms": round((time.perf_counter()-started)*1000, 2), "llm_timed_out": timed_out})
     return response
 
 def _resolve(request: AskRequest) -> dict:

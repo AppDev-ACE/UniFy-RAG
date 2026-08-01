@@ -68,6 +68,25 @@ RRF_K = 60
 # still abstain) while sitting below both new confirmed-correct scores.
 LLM_VETO_OVERRIDE_SCORE = float(os.environ.get("LLM_VETO_OVERRIDE_SCORE", "0.42"))
 
+# Wall-clock ceiling on everything the LLM does for one question, after
+# which the student is served the retrieved record verbatim -- the behaviour
+# this service had before any of the LLM work existed.
+#
+# A clarify-tier question costs 4-6 *sequential* Ollama calls (probe each
+# candidate, then the retry ladder, then the reword pass) and nothing used
+# to bound their total. Measured over 144 live cache-miss queries on
+# qwen2.5:3b: median 4.1s, p90 15.3s, max 39.4s, with 7.6% over 20s -- and
+# the Flutter client gives up at 20s, so those students saw a timeout error
+# rather than the perfectly good human-reviewed answer sitting in the index.
+# (The same traffic on qwen2.5:0.5b was worse: p90 21.1s, 11.3% over 20s.
+# The tail is the call count, not the model.)
+#
+# Deliberately below the client's 20s and not equal to it: the budget only
+# bounds Ollama time, and a response still has to be built and cross the
+# network to a phone. Spending the client's entire allowance server-side
+# would race the very timeout this exists to prevent.
+LLM_LATENCY_BUDGET_SECONDS = float(os.environ.get("LLM_LATENCY_BUDGET_SECONDS", "15"))
+
 OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "http://127.0.0.1:11434")
 OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "qwen2.5:3b")
 LLM_ENABLED = os.environ.get("LLM_ENABLED", "1").strip().lower() not in {"0", "false", "no"}

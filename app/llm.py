@@ -128,10 +128,14 @@ confirmed pick is answered (rephrased or verbatim), an unconfirmed one is
 routed to a human.
 """
 from __future__ import annotations
+import contextvars
 import re
+import time
+from contextlib import contextmanager
+
 import requests
-from app.config import (LLM_ENABLED, LLM_MAX_CONTEXT_RECORDS, LLM_TIMEOUT_SECONDS,
-                        LLM_VETO_OVERRIDE_SCORE, OLLAMA_HOST, OLLAMA_MODEL)
+from app.config import (LLM_ENABLED, LLM_LATENCY_BUDGET_SECONDS, LLM_MAX_CONTEXT_RECORDS,
+                        LLM_TIMEOUT_SECONDS, LLM_VETO_OVERRIDE_SCORE, OLLAMA_HOST, OLLAMA_MODEL)
 from app.phrasing import asks_for_value, is_polar_answer
 
 NOT_FOUND = "NOT_FOUND"
@@ -649,7 +653,46 @@ def _is_verbatim_copy(text: str, answers: list[str]) -> bool:
         return True
     return text_words == _normalized_words(" ".join(answers))
 
+# One question's whole allowance of Ollama time. LLM_TIMEOUT_SECONDS caps a
+# single call; this caps their sum, which is what a student actually waits
+# and what nothing bounded before -- a clarify-tier question spends 4-6
+# calls in series, so a per-call limit permits a wait several times its own
+# size.
+#
+# A ContextVar rather than a parameter threaded through the ladder: every
+# function between the endpoint and the call would have to carry it purely
+# to pass it on, and `ask` is a sync endpoint FastAPI runs in a worker
+# thread, so each request reads and writes its own copy.
+_deadline: contextvars.ContextVar[float | None] = contextvars.ContextVar("llm_deadline", default=None)
+
+@contextmanager
+def latency_budget(seconds: float | None = None):
+    """Bound the Ollama time spent inside this block. Callers do not handle
+    the expiry: the functions below degrade to what they already do when the
+    model is unreachable, which is to serve a retrieved record verbatim."""
+    token = _deadline.set(time.monotonic() + (LLM_LATENCY_BUDGET_SECONDS if seconds is None else seconds))
+    try:
+        yield
+    finally:
+        _deadline.reset(token)
+
+def _budget_remaining() -> float | None:
+    """Seconds of Ollama time left, or None when no budget is in force (the
+    terminal tester and the unit tests call in without one)."""
+    deadline = _deadline.get()
+    return None if deadline is None else deadline - time.monotonic()
+
+def budget_spent() -> bool:
+    remaining = _budget_remaining()
+    return remaining is not None and remaining <= 0
+
 def _call_ollama(system_prompt: str, user_content: str) -> str | None:
+    # Refusing to start a call the budget cannot cover is the point: a
+    # student waits for calls that were *started*, so the check belongs
+    # here, before the request, not after it.
+    remaining = _budget_remaining()
+    if remaining is not None and remaining <= 0:
+        return None
     payload = {
         "model": OLLAMA_MODEL,
         "messages": [
@@ -669,8 +712,11 @@ def _call_ollama(system_prompt: str, user_content: str) -> str | None:
         # verbatim-copying trap it was before those fixes existed.
         "options": {"temperature": 0.15, "num_predict": 300},
     }
+    # A call is also not allowed to run past the budget it started inside,
+    # so the per-call timeout shrinks to whatever is left of it.
+    timeout = LLM_TIMEOUT_SECONDS if remaining is None else min(LLM_TIMEOUT_SECONDS, remaining)
     try:
-        response = requests.post(f"{OLLAMA_HOST}/api/chat", json=payload, timeout=LLM_TIMEOUT_SECONDS)
+        response = requests.post(f"{OLLAMA_HOST}/api/chat", json=payload, timeout=timeout)
         response.raise_for_status()
         return response.json()["message"]["content"].strip()
     except (requests.RequestException, KeyError, ValueError):
@@ -897,6 +943,27 @@ def synthesize_answer(query: str, match: dict | None, *, reword_on_failure: bool
 def _shape_mismatch(query: str, record: dict) -> bool:
     return asks_for_value(query) and is_polar_answer(record.get("answer", ""))
 
+def _out_of_time(query: str, capped: list[dict]) -> tuple[dict, None] | None:
+    """What a student gets when the latency budget runs out mid-walk: the
+    best retrieved record, served verbatim -- exactly what this service
+    returned before any LLM work existed, and what it already falls back to
+    whenever a rephrase fails a grounding check.
+
+    Deliberately not an abstention. Retrieval put these candidates through
+    the same TAU_LOW gate as always and they are human-reviewed records; the
+    clock running out says nothing about whether they answer the question,
+    so "I don't have an answer for that" would be a worse and less honest
+    reply than the answer sitting in the index.
+
+    Deliberately still shape-checked. A yes/no-shaped record served raw to a
+    student who asked "how many" is the bug this module was just fixed for,
+    and a timeout is no reason to reintroduce it -- so those are skipped and
+    the best remaining record is used, or nothing if that leaves none."""
+    for candidate in capped:
+        if not _shape_mismatch(query, candidate["record"]):
+            return candidate, None
+    return None
+
 def disambiguate_and_answer(query: str, candidates: list[dict]) -> tuple[dict, str | None] | None:
     """Given the 2-3 human-clarify-tier candidates, find the one that
     actually answers the question and rephrase only that record.
@@ -967,12 +1034,21 @@ def disambiguate_and_answer(query: str, candidates: list[dict]) -> tuple[dict, s
     # refused to phrase as an answer -- a better-grounded verdict than a
     # comparison made before any of them had been read closely.
     for candidate in capped:
+        # Out of time: stop probing and serve what retrieval already found,
+        # verbatim. See `_out_of_time` -- this is a fallback to the answer
+        # the index holds, never an abstention.
+        if budget_spent():
+            return _out_of_time(query, capped)
         answers = [candidate["record"]["answer"]]
         text, reason = _grounded_rephrase(query, answers)
         if text is not None:
             return candidate, text
         if reason == UNAVAILABLE:
-            return None
+            # Told apart by the clock: a call the budget refused to start
+            # looks identical to one Ollama never answered, but the first
+            # means "we ran out of time to phrase a record we have" and the
+            # second means "the model is gone". Only the latter abstains.
+            return _out_of_time(query, capped) if budget_spent() else None
         if reason == UNPHRASEABLE:
             # This record does answer the question -- the model engaged with
             # it rather than returning NOT_FOUND -- so the topic is settled
