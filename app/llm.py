@@ -8,11 +8,11 @@ Two entry points, both grounded the same way:
 - `disambiguate_and_answer` is the one case where the LLM does get a say in
   *which* record answers the question: the human-clarify tier (below
   TAU_HIGH), where retrieval alone couldn't separate 2-3 topically close
-  candidates. It picks exactly one candidate index, then hands that single
-  record to `synthesize_answer` -- two calls, so the rephrase is grounded
-  in the chosen record alone and never blends across candidates, which is
-  what would break pair_id/source attribution, the thing this codebase
-  protects most.
+  candidates. It walks them in retrieval order, asking of each "does THIS
+  record answer the question", and answers from the first that says yes.
+  Each probe is grounded in that one record alone and never blends across
+  candidates, which is what would break pair_id/source attribution, the
+  thing this codebase protects most.
 
 Grounding is always scoped to exactly one record -- the one already
 accepted, or the one just picked. Never the wider retrieved pool: the
@@ -136,10 +136,6 @@ from app.phrasing import asks_for_value, is_polar_answer
 
 NOT_FOUND = "NOT_FOUND"
 NUMBER_RE = re.compile(r"\d+")
-INDEX_RE = re.compile(r"INDEX:\s*\[?(\d+|NONE)\]?", re.IGNORECASE)
-# A whole reply that is nothing but the choice itself -- "1", "[2]", "2.",
-# "NONE" -- with no INDEX: label. See _parse_disambiguation.
-BARE_INDEX_RE = re.compile(r"^\W*(\d+|NONE)\W*$", re.IGNORECASE)
 
 # A rephrase that keeps "best of 2" as "best of two" is not drift -- it's the
 # same fact in words. Digit extraction alone treats that as a dropped number,
@@ -190,31 +186,8 @@ SYSTEM_PROMPT = (
     "question, reply with exactly: " + NOT_FOUND
 )
 
-DISAMBIGUATION_SYSTEM_PROMPT = (
-    "You are the SASTRA Freshers Assistant. CONTEXT below lists up to three "
-    "candidates, numbered [1], [2], [3] -- each is a QUESTION this system has "
-    "on file plus the ANSWER stored for it. They were retrieved as merely "
-    "similar to the student's question, so they may be about a different "
-    "event, group, or topic even when they share words with it (e.g. a "
-    "question about documents for admission is NOT an answer to a question "
-    "about documents for orientation, even though both mention documents). "
-    "Compare the student's question to each candidate's QUESTION first --  "
-    "that is the strongest signal of whether the topic actually matches, "
-    "not shared keywords in the ANSWER. Decide which ONE candidate, if any, "
-    "actually answers the student's question. If you are not confident any "
-    "candidate is about the same topic, choose NONE rather than guess.\n\n"
-    "Reply with exactly this one line and nothing else:\n"
-    "INDEX: <the matching candidate's number, or NONE if none of them answer the question>"
-)
-
 def _build_context(answers: list[str]) -> str:
     return "\n".join(f"[{i}] {answer}" for i, answer in enumerate(answers, 1))
-
-def _build_disambiguation_context(candidates: list[dict]) -> str:
-    return "\n".join(
-        f"[{i}] QUESTION ON FILE: {c['question']}\n    ANSWER: {c['record']['answer']}"
-        for i, c in enumerate(candidates, 1)
-    )
 
 def _user_content(query: str, context: str, correction: str | None = None) -> str:
     content = f"CONTEXT:\n{context}\n\nSTUDENT QUESTION: {query}"
@@ -924,42 +897,43 @@ def synthesize_answer(query: str, match: dict | None, *, reword_on_failure: bool
 def _shape_mismatch(query: str, record: dict) -> bool:
     return asks_for_value(query) and is_polar_answer(record.get("answer", ""))
 
-def _parse_disambiguation(text: str) -> int | None:
-    # Asked for a single "INDEX: n" line and nothing else, the model very
-    # often drops the now-redundant label and answers with just "1" or
-    # "[2]". That is a perfectly clear pick and must not be thrown away as
-    # unparseable -- doing so abstained on most of this tier and routed
-    # answerable questions to a human. The bare form is anchored to the
-    # whole reply, so a stray digit inside a sentence of prose still counts
-    # as no verdict rather than as a choice.
-    stripped = text.strip()
-    match = INDEX_RE.search(stripped) or BARE_INDEX_RE.match(stripped)
-    if not match or match.group(1).upper() == "NONE":
-        return None
-    return int(match.group(1))
-
 def disambiguate_and_answer(query: str, candidates: list[dict]) -> tuple[dict, str | None] | None:
-    """Given the 2-3 human-clarify-tier candidates, ask the LLM to pick the
-    ONE that actually answers the question, then rephrase only that record.
+    """Given the 2-3 human-clarify-tier candidates, find the one that
+    actually answers the question and rephrase only that record.
 
-    Those are two calls, deliberately. They were one: a single prompt asking
-    for an INDEX line and an ANSWER line together. Splitting them helped
-    both halves. The pick becomes a plain classification with a one-line
-    answer, which a 3B model does far more reliably than choosing and
-    composing at once; and the rephrase becomes an ordinary
-    `synthesize_answer` call, so it inherits the full retry ladder
-    (missing facts, then verbatim-copy, then added commentary) instead of
-    the abbreviated copy this function used to carry. That ladder is where
-    most personalised answers are actually won -- first attempts fail a
-    grounding check routinely and the retry recovers them -- so the merged
-    version was giving up most of its answers to the verbatim fallback. The
-    cost is one extra call on this tier only.
+    This walks the candidates in retrieval order, asking of each "does THIS
+    record answer the question" and answering from the first that says yes.
+    It used to spend one call ahead of the walk on a separate picker -- a
+    prompt showing all the candidates' questions on file at once and asking
+    for the index of the matching one -- whose only effect was to move its
+    choice to the front of this same walk.
 
-    The returned record is not always the picked one: a pick whose rephrase
-    comes back NOT_FOUND is treated as disowned and the remaining candidates
-    are tried in retrieval order (see the loop below). Whatever comes back
-    is the record the answer is attributed to, so callers must read
-    pair_id/source/confidence off it and never off `candidates[0]`.
+    That call was removed for latency. Measured on qwen2.5:3b over a
+    14-query set on the production VPS, it cost a whole extra sequential
+    call on every clarify-tier question: p90 30.7s against 18.8s without it,
+    3.2 calls per query against 2.3. Thirteen of the fourteen queries
+    resolved to exactly the same record either way, because retrieval order
+    and the picker's choice usually agree.
+
+    The fourteenth is the known cost, and it is a real one. "When are the
+    CIA exams" resolves to the record explaining what a CIA is rather than
+    the one holding the exam dates: retrieval ranks those two the other way
+    round, and comparing the student's question against each candidate's
+    question on file -- which is what the picker did, and the only signal
+    that separates "when" from "what" here -- is exactly what is now gone.
+    So a question whose wording shares nothing lexically with the record
+    that answers it ("when" against "dates") can land on a neighbouring
+    record on the same topic. The answer is still a true, human-reviewed one
+    about the thing asked about; it may answer a different question about
+    it. Restoring the picker without paying for it serially was tried by
+    overlapping the two calls concurrently, and made things much worse on
+    this CPU-only box (see git history): two concurrent 3B calls each get
+    half the cores, individual calls then exceed LLM_TIMEOUT_SECONDS, and
+    answered dropped from 12/14 to 6/14.
+
+    Whatever comes back is the record the answer is attributed to, so
+    callers must read pair_id/source/confidence off it and never off
+    `candidates[0]`.
 
     Three distinct outcomes, which callers must NOT collapse into one:
     - `(match, llm_answer)` -- a record was confirmed (it answered the
@@ -970,8 +944,7 @@ def disambiguate_and_answer(query: str, candidates: list[dict]) -> tuple[dict, s
       breaking a grounding check. The record is still correct; only the
       wording isn't usable. Caller must show that record's stored answer
       verbatim, NOT fall back to a suggestion list -- the topic is resolved.
-    - `None` -- no record was confirmed at all: explicit NONE verdict,
-      unparseable or out-of-range index, every candidate answering
+    - `None` -- no record was confirmed at all: every candidate answered
       NOT_FOUND, or the call failed outright.
       Nothing here should be shown as an answer, verbatim
       or otherwise. Callers must abstain (route to a human), never guess by
@@ -980,55 +953,20 @@ def disambiguate_and_answer(query: str, candidates: list[dict]) -> tuple[dict, s
     if not LLM_ENABLED or not candidates:
         return None
     capped = candidates[:LLM_MAX_CONTEXT_RECORDS]
-    context = _build_disambiguation_context(capped)
-    raw = _call_ollama(DISAMBIGUATION_SYSTEM_PROMPT, _user_content(query, context))
-    if raw is None:
-        return None
-    index = _parse_disambiguation(raw)
-    # A NONE verdict (or an unparseable/out-of-range one) used to abstain
-    # outright. That was the single biggest source of "I don't have an answer
-    # for that" on questions the corpus does answer, because of what the
-    # picker is actually being asked: "which ONE candidate answers this".
-    # For a broad question -- "What are the hostel rules for boys?" -- every
-    # candidate answers a *part* (timings, curfew, outings, Wi-Fi) and none
-    # answers the whole, so a model told to choose NONE rather than guess
-    # correctly chooses NONE, and the student got nothing. Observed
-    # alongside the near-identical "What is the hostel rules?" being answered
-    # fine, purely because that phrasing happened to retrieve candidates one
-    # of which the picker was willing to call a whole answer.
+    # A NOT_RELEVANT verdict moves on to the next candidate; anything else
+    # settles here (only NOT_FOUND is a statement about the record -- the
+    # rest are about the wording). Walking in retrieval rank keeps this
+    # cheap and deterministic, and in practice the first probe answers, so
+    # the rest of the walk usually costs nothing at all.
     #
-    # A NONE is therefore no longer a verdict to act on, only a failure to
-    # choose: fall through to the same per-candidate walk, which asks the
-    # far easier question "does THIS record answer the question" one record
-    # at a time and answers from the first that says yes. Genuinely
-    # unanswerable questions still abstain -- every candidate returns
-    # NOT_FOUND and the walk runs out (spot-checked against off-corpus
-    # questions: pool location, US visas, exam seat numbers, yesterday's
-    # cricket score, all still abstain).
-    picked = capped[index - 1] if index is not None and 1 <= index <= len(capped) else None
-    # The pick is tried first, then the rest in retrieval order -- because a
-    # NOT_FOUND from the rephrase is a second, independent opinion on the
-    # pick, and a much better grounded one: the picker sees three candidates
-    # at once and answers a comparison, while this asks only "does THIS
-    # record answer the question", which a 3B model is far better at.
-    #
-    # The pick going wrong is not hypothetical. For "What is the bus fare
-    # from SASTRA to Thanjavur?" the picker chose the travel record ("bus to
-    # thanjavur from sastra", 0.712) over the literal "What is the bus fare
-    # to Thanjavur?" record ranked above it (0.992); the rephrase then
-    # answered NOT_FOUND, correctly, because that record contains no fare.
-    # That verdict used to be discarded and the travel record served
-    # verbatim -- the student got the wrong record AND raw corpus text, the
-    # two failures this module exists to prevent, from one bad pick.
-    #
-    # A NOT_RELEVANT verdict therefore moves on to the next candidate;
-    # anything else settles here (only NOT_FOUND is a statement about the
-    # record -- the rest are about the wording). Ordering the remainder by
-    # retrieval rank rather than re-asking the picker keeps this cheap and
-    # deterministic: in practice the first probe answers, and the walk costs
-    # nothing at all unless a pick was actually wrong.
-    order = [picked] + [c for c in capped if c is not picked] if picked else list(capped)
-    for candidate in order:
+    # Asking each record on its own is the whole point, and is why dropping
+    # the picker costs so little: "does THIS record answer the question" is
+    # a far easier question for a small model than "which of these three
+    # does", and it is asked against the record's own answer text rather
+    # than a list. A record the walk disowns is one this same ladder just
+    # refused to phrase as an answer -- a better-grounded verdict than a
+    # comparison made before any of them had been read closely.
+    for candidate in capped:
         answers = [candidate["record"]["answer"]]
         text, reason = _grounded_rephrase(query, answers)
         if text is not None:

@@ -404,85 +404,53 @@ class RewordFallbackTests(unittest.TestCase):
         self.assertEqual(post.call_count, 1)
 
 class DisambiguationTests(unittest.TestCase):
-    def test_bracketed_index_is_parsed_and_grounds_to_the_chosen_candidate(self):
-        # Real observed model output: "INDEX: [1]" rather than "INDEX: 1" --
-        # mirrors the [1]/[2]/[3] notation used in the prompt's own context.
-        # The pick and the rephrase are two separate calls.
-        pick = "INDEX: [1]"
+    """The clarify-tier walk. There is no separate picker call any more (see
+    disambiguate_and_answer): the candidates are probed one at a time in
+    retrieval order and the first that answers is used, so the call counts
+    below are the walk's own probes plus whatever the retry ladder spends."""
+
+    def test_first_candidate_that_answers_is_used(self):
         rephrase = "A two-day orientation runs on August 3 and 4, 2026."
-        with patch("app.llm.requests.post", side_effect=[mock_response(pick), mock_response(rephrase)]) as post:
+        with patch("app.llm.requests.post", return_value=mock_response(rephrase)) as post:
             result = disambiguate_and_answer("when is orientation", [CANDIDATE_A, CANDIDATE_B])
         self.assertIsNotNone(result)
         chosen, answer = result
         self.assertIs(chosen, CANDIDATE_A)
         self.assertEqual(answer, rephrase)
-        self.assertEqual(post.call_count, 2)
+        # One probe, and CANDIDATE_B is never touched.
+        self.assertEqual(post.call_count, 1)
 
-    def test_pick_call_asks_only_for_an_index(self):
-        # The disambiguation prompt must not request an ANSWER line any
-        # more -- the rephrase is a separate synthesize_answer call.
-        with patch("app.llm.requests.post", side_effect=[mock_response("INDEX: 1"), mock_response("You will have a two-day orientation on August 3 and 4, 2026.")]) as post:
+    def test_no_pick_call_is_made(self):
+        # The regression guard for the change itself: every call must be a
+        # grounding call about one record, never a "choose between these"
+        # call listing all the candidates at once.
+        rephrase = "A two-day orientation runs on August 3 and 4, 2026."
+        with patch("app.llm.requests.post", return_value=mock_response(rephrase)) as post:
             disambiguate_and_answer("when is orientation", [CANDIDATE_A, CANDIDATE_B])
-        pick_system = post.call_args_list[0].kwargs["json"]["messages"][0]["content"]
-        self.assertIn("INDEX:", pick_system)
-        self.assertNotIn("ANSWER:", pick_system)
+        for prompt in system_prompts(post):
+            self.assertNotIn("INDEX:", prompt)
+        for call in post.call_args_list:
+            user = call.kwargs["json"]["messages"][1]["content"]
+            self.assertNotIn(CANDIDATE_B["record"]["answer"], user)
 
-    def test_rephrase_is_grounded_only_in_the_chosen_candidate(self):
+    def test_probe_is_grounded_only_in_the_candidate_being_probed(self):
         # CANDIDATE_B's facts must never leak into the grounding context for
         # a rephrase of CANDIDATE_A -- that is what protects pair_id/source
         # attribution.
-        with patch("app.llm.requests.post", side_effect=[mock_response("INDEX: 1"), mock_response("You will have a two-day orientation on August 3 and 4, 2026.")]) as post:
+        with patch("app.llm.requests.post", return_value=mock_response(
+                "You will have a two-day orientation on August 3 and 4, 2026.")) as post:
             disambiguate_and_answer("when is orientation", [CANDIDATE_A, CANDIDATE_B])
-        rephrase_user = post.call_args_list[1].kwargs["json"]["messages"][1]["content"]
-        self.assertIn(CANDIDATE_A["record"]["answer"], rephrase_user)
-        self.assertNotIn(CANDIDATE_B["record"]["answer"], rephrase_user)
+        probe_user = post.call_args_list[0].kwargs["json"]["messages"][1]["content"]
+        self.assertIn(CANDIDATE_A["record"]["answer"], probe_user)
+        self.assertNotIn(CANDIDATE_B["record"]["answer"], probe_user)
 
-    def test_plain_index_is_also_parsed(self):
-        reply = "INDEX: 2\nANSWER: Parent orientation is optional, held August 3 from 11:30 a.m. to 1:00 p.m."
-        with patch("app.llm.requests.post", return_value=mock_response(reply)):
-            chosen, _ = disambiguate_and_answer("parent orientation timing", [CANDIDATE_A, CANDIDATE_B])
-        self.assertIs(chosen, CANDIDATE_B)
-
-    def test_bare_number_reply_is_accepted_as_a_pick(self):
-        # What the model actually returns once the prompt asks for one line
-        # and nothing else: the label gets dropped. Rejecting these as
-        # unparseable abstained on most of this tier.
-        for reply in ("1", "[1]", "1.", " 1 "):
-            with self.subTest(reply=reply):
-                with patch("app.llm.requests.post", side_effect=[
-                        mock_response(reply),
-                        mock_response("You will have a two-day orientation on August 3 and 4, 2026.")]):
-                    chosen, _ = disambiguate_and_answer("when is orientation", [CANDIDATE_A, CANDIDATE_B])
-                self.assertIs(chosen, CANDIDATE_A)
-
-    def test_bare_none_reply_is_still_a_no_verdict(self):
-        with patch("app.llm.requests.post", return_value=mock_response("NONE")):
-            self.assertIsNone(disambiguate_and_answer("unrelated question", [WEAK_A, WEAK_B]))
-
-    def test_stray_digit_inside_prose_is_not_read_as_a_pick(self):
-        # The bare form only counts when the choice is the entire reply --
-        # otherwise "it's on august 3rd" would silently select candidate 3.
-        with patch("app.llm.requests.post", return_value=mock_response("sure, it's on august 3rd")):
-            self.assertIsNone(disambiguate_and_answer("when is orientation", [WEAK_A, WEAK_B]))
-
-    def test_none_verdict_falls_back_to_none(self):
-        with patch("app.llm.requests.post", return_value=mock_response("INDEX: NONE\nANSWER:")):
-            self.assertIsNone(disambiguate_and_answer("unrelated question", [WEAK_A, WEAK_B]))
-
-    def test_out_of_range_index_falls_back_to_none(self):
-        with patch("app.llm.requests.post", return_value=mock_response("INDEX: 7\nANSWER: something")):
-            self.assertIsNone(disambiguate_and_answer("when is orientation", [WEAK_A, WEAK_B]))
-
-    def test_unparseable_reply_falls_back_to_none(self):
-        with patch("app.llm.requests.post", return_value=mock_response("sure, it's on august 3rd")):
-            self.assertIsNone(disambiguate_and_answer("when is orientation", [WEAK_A, WEAK_B]))
-
-    def test_number_drift_against_chosen_candidate_falls_back_to_chosen_with_no_text(self):
-        # The index itself came straight from the model and is trustworthy;
-        # only the rephrase drifted. That's "(chosen, None)", not outright
-        # None -- the caller serves CANDIDATE_A verbatim, not a pick-list.
-        reply = "INDEX: [1]\nANSWER: A two-day orientation runs on August 5 and 6, 2026."
-        with patch("app.llm.requests.post", return_value=mock_response(reply)):
+    def test_number_drift_falls_back_to_chosen_with_no_text(self):
+        # The record is right -- the model engaged with it rather than
+        # disowning it -- and only the rephrase drifted. That is
+        # "(chosen, None)", not outright None: the caller serves CANDIDATE_A
+        # verbatim, not a pick-list.
+        drifted = "A two-day orientation runs on August 5 and 6, 2026."
+        with patch("app.llm.requests.post", return_value=mock_response(drifted)):
             result = disambiguate_and_answer("when is orientation", [CANDIDATE_A, CANDIDATE_B])
         self.assertIsNotNone(result)
         chosen, answer = result
@@ -492,24 +460,24 @@ class DisambiguationTests(unittest.TestCase):
     def test_strong_retrieval_match_is_answered_despite_a_total_llm_veto(self):
         # The "even though it has a source, still the same" bug. Every
         # candidate is refused by the model, but CANDIDATE_A is a strong,
-        # human-reviewed retrieval match, and one 3B model's opinion does not
-        # get to discard it -- exactly as on the past-TAU_HIGH path, where
-        # retrieval decides relevance and the LLM only phrases.
+        # human-reviewed retrieval match, and one small model's opinion does
+        # not get to discard it -- exactly as on the past-TAU_HIGH path,
+        # where retrieval decides relevance and the LLM only phrases.
         reworded = "Orientation runs for two days, on August 3 and 4, 2026."
         with patch("app.llm.requests.post", side_effect=[
-                mock_response("NONE"), mock_response("NOT_FOUND"),
-                mock_response("NOT_FOUND"), mock_response(reworded)]):
+                mock_response("NOT_FOUND"), mock_response("NOT_FOUND"),
+                mock_response(reworded)]):
             chosen, text = disambiguate_and_answer("documents for inauguration", [CANDIDATE_A, CANDIDATE_B])
         self.assertIs(chosen, CANDIDATE_A)
         self.assertEqual(text, reworded)
 
-    def test_override_answers_from_the_best_scoring_record_not_the_pick(self):
+    def test_override_answers_from_the_best_scoring_record(self):
         # The override exists because retrieval outranks the model here, so
-        # it must serve retrieval's best record. CANDIDATE_B is picked and
-        # both are then refused; CANDIDATE_A (0.84) is what gets answered.
+        # it must serve retrieval's best record -- CANDIDATE_A at 0.84 --
+        # once every candidate has refused the question.
         with patch("app.llm.requests.post", side_effect=[
-                mock_response("INDEX: 2"), mock_response("NOT_FOUND"),
-                mock_response("NOT_FOUND"), mock_response("Orientation is two days, August 3 and 4, 2026.")]):
+                mock_response("NOT_FOUND"), mock_response("NOT_FOUND"),
+                mock_response("Orientation is two days, August 3 and 4, 2026.")]):
             chosen, _ = disambiguate_and_answer("when is the session", [CANDIDATE_A, CANDIDATE_B])
         self.assertIs(chosen, CANDIDATE_A)
 
@@ -529,33 +497,12 @@ class DisambiguationTests(unittest.TestCase):
         with patch("app.llm.requests.post", return_value=mock_response("NOT_FOUND")):
             self.assertIsNone(disambiguate_and_answer("where is the swimming pool", [WEAK_A, WEAK_B]))
 
-    def test_none_verdict_falls_through_to_the_per_candidate_walk(self):
-        # The "I don't have an answer for that" bug. Asked "which ONE of
-        # these answers the question" about a broad question, the picker
-        # correctly answers NONE -- each candidate covers only a part. That
-        # used to abstain outright. Probing one record at a time is a far
-        # easier question, and the first candidate answers it.
-        answer = "There is a two-day orientation on August 3 and 4, 2026."
+    def test_walk_abstains_when_no_record_answers(self):
         with patch("app.llm.requests.post", side_effect=[
-                mock_response("NONE"), mock_response(answer)]) as post:
-            chosen, text = disambiguate_and_answer("what happens in the first week", [CANDIDATE_A, CANDIDATE_B])
-        self.assertIs(chosen, CANDIDATE_A)
-        self.assertEqual(text, answer)
-        self.assertEqual(post.call_count, 2)
-
-    def test_unparseable_pick_also_falls_through_to_the_walk(self):
-        answer = "There is a two-day orientation on August 3 and 4, 2026."
-        with patch("app.llm.requests.post", side_effect=[
-                mock_response("sure, it's on august 3rd"), mock_response(answer)]):
-            chosen, text = disambiguate_and_answer("when is orientation", [CANDIDATE_A, CANDIDATE_B])
-        self.assertIs(chosen, CANDIDATE_A)
-        self.assertEqual(text, answer)
-
-    def test_walk_after_a_none_verdict_still_abstains_when_no_record_answers(self):
-        # The relaxation must not turn NONE into "answer with something".
-        with patch("app.llm.requests.post", side_effect=[
-                mock_response("NONE"), mock_response("NOT_FOUND"), mock_response("NOT_FOUND")]):
+                mock_response("NOT_FOUND"), mock_response("NOT_FOUND")]) as post:
             self.assertIsNone(disambiguate_and_answer("where is the swimming pool", [WEAK_A, WEAK_B]))
+        # Both candidates probed, nothing else attempted.
+        self.assertEqual(post.call_count, 2)
 
     def test_refusal_shaped_reply_does_not_confirm_the_record(self):
         # Observed against the live model: "can I keep a pet dog in the
@@ -566,7 +513,7 @@ class DisambiguationTests(unittest.TestCase):
         # none of the record's own substance is not a near-miss rephrase of
         # it, so the walk must move on rather than settle.
         with patch("app.llm.requests.post", side_effect=[
-                mock_response("INDEX: 1"), mock_response("NO"),
+                mock_response("NO"),
                 mock_response("Parent orientation is optional, on August 3 from 11:30 a.m. to 1:00 p.m.")]):
             chosen, text = disambiguate_and_answer("is the parent session optional", [CANDIDATE_A, CANDIDATE_B])
         self.assertIs(chosen, CANDIDATE_B)
@@ -592,63 +539,45 @@ class DisambiguationTests(unittest.TestCase):
         self.assertIs(chosen, CANDIDATE_A)
         self.assertEqual(reword_calls(post), 1)
 
-    def test_pick_disowned_by_its_own_rephrase_moves_on_to_the_next_candidate(self):
-        # The bug from the terminal transcript, in miniature: the picker
-        # chose the record it liked when comparing three at once, but asked
-        # about that record alone the model answered NOT_FOUND. That verdict
-        # used to be discarded and the disowned record served verbatim --
-        # wrong record AND raw corpus text. It must now fall through to the
-        # next candidate in retrieval order.
+    def test_candidate_disowned_by_its_own_probe_moves_on_to_the_next(self):
+        # A NOT_FOUND is a verdict about the record, not the wording, so the
+        # walk must fall through rather than serve a record its own probe
+        # just disowned -- that was wrong record AND raw corpus text.
         answer = "Parent orientation is optional and runs August 3, 11:30 a.m. to 1:00 p.m."
         with patch("app.llm.requests.post", side_effect=[
-                mock_response("INDEX: 1"), mock_response("NOT_FOUND"), mock_response(answer)]) as post:
+                mock_response("NOT_FOUND"), mock_response(answer)]) as post:
             chosen, text = disambiguate_and_answer("when is the parent session", [CANDIDATE_A, CANDIDATE_B])
         self.assertIs(chosen, CANDIDATE_B)
         self.assertEqual(text, answer)
-        self.assertEqual(post.call_count, 3)
+        self.assertEqual(post.call_count, 2)
 
     def test_walk_grounds_each_probe_in_that_candidate_alone(self):
         # Falling through to another candidate must not widen the grounding
         # context -- pair_id/source attribution depends on each probe seeing
         # exactly one record.
         with patch("app.llm.requests.post", side_effect=[
-                mock_response("INDEX: 1"), mock_response("NOT_FOUND"),
+                mock_response("NOT_FOUND"),
                 mock_response("Parent orientation is optional, August 3, 11:30 a.m. to 1:00 p.m.")]) as post:
             disambiguate_and_answer("when is the parent session", [CANDIDATE_A, CANDIDATE_B])
-        second_probe = post.call_args_list[2].kwargs["json"]["messages"][1]["content"]
+        second_probe = post.call_args_list[1].kwargs["json"]["messages"][1]["content"]
         self.assertIn(CANDIDATE_B["record"]["answer"], second_probe)
         self.assertNotIn(CANDIDATE_A["record"]["answer"], second_probe)
 
-    def test_every_candidate_disowning_the_question_abstains(self):
-        # No record was ever confirmed, so this is the `None` case: route to
-        # a human. Serving the picked record anyway would be exactly the bug
-        # above, just with no candidate left to fall through to.
-        with patch("app.llm.requests.post", return_value=mock_response("NOT_FOUND")) as post:
-            self.assertIsNone(disambiguate_and_answer("where is the swimming pool", [WEAK_A, WEAK_B]))
-        # The pick call reads "NOT_FOUND" as an unparseable index, which no
-        # longer abstains on its own -- both candidates are then probed and
-        # both disown the question, which is what abstains.
-        self.assertEqual(post.call_count, 3)
-
     def test_unreachable_ollama_mid_walk_abstains_rather_than_probing_on(self):
-        with patch("app.llm.requests.post", side_effect=[
-                mock_response("INDEX: 1"), requests.ConnectionError("ollama died")]) as post:
+        with patch("app.llm.requests.post", side_effect=requests.ConnectionError("ollama died")) as post:
             self.assertIsNone(disambiguate_and_answer("when is orientation", [CANDIDATE_A, CANDIDATE_B]))
-        self.assertEqual(post.call_count, 2)
-
-    def test_connection_error_falls_back_to_none(self):
-        with patch("app.llm.requests.post", side_effect=requests.ConnectionError("no ollama here")):
-            self.assertIsNone(disambiguate_and_answer("when is orientation", [CANDIDATE_A, CANDIDATE_B]))
+        self.assertEqual(post.call_count, 1)
 
     def test_disabled_flag_skips_network_call_entirely(self):
         with patch("app.llm.LLM_ENABLED", False), patch("app.llm.requests.post") as post:
             self.assertIsNone(disambiguate_and_answer("when is orientation", [CANDIDATE_A, CANDIDATE_B]))
             post.assert_not_called()
 
-    def test_verbatim_disambiguation_is_retried_and_recovers_with_paraphrase(self):
-        copy_reply = f"INDEX: [1]\nANSWER: {CANDIDATE_A['record']['answer']}"
+    def test_verbatim_copy_is_retried_and_recovers_with_paraphrase(self):
+        copy_reply = CANDIDATE_A["record"]["answer"]
         paraphrased = "You'll have two full days of orientation starting August 3rd, running into the 4th, 2026."
-        with patch("app.llm.requests.post", side_effect=[mock_response(copy_reply), mock_response(paraphrased)]) as post:
+        with patch("app.llm.requests.post", side_effect=[
+                mock_response(copy_reply), mock_response(paraphrased)]) as post:
             result = disambiguate_and_answer("when is orientation", [CANDIDATE_A, CANDIDATE_B])
         self.assertIsNotNone(result)
         chosen, answer = result
@@ -656,22 +585,19 @@ class DisambiguationTests(unittest.TestCase):
         self.assertEqual(answer, paraphrased)
         self.assertEqual(post.call_count, 2)
 
-    def test_verbatim_disambiguation_retry_still_copying_falls_back_to_chosen_with_no_text(self):
-        # Same reasoning as the number-drift case: the pick is still good,
+    def test_verbatim_copy_retry_still_copying_falls_back_to_chosen_with_no_text(self):
+        # Same reasoning as the number-drift case: the record is still good,
         # only the wording never became usable -- (chosen, None), not None.
-        copy_reply = f"INDEX: [1]\nANSWER: {CANDIDATE_A['record']['answer']}"
+        copy_reply = CANDIDATE_A["record"]["answer"]
         with patch("app.llm.requests.post", return_value=mock_response(copy_reply)) as post:
             result = disambiguate_and_answer("when is orientation", [CANDIDATE_A, CANDIDATE_B])
         chosen, answer = result
         self.assertIs(chosen, CANDIDATE_A)
         self.assertIsNone(answer)
-        # Pick, rephrase, then the reword pass -- and crucially it stops
-        # there rather than walking on to CANDIDATE_B: the model engaged
-        # with CANDIDATE_A instead of answering NOT_FOUND, so the topic is
-        # settled and only the wording failed. (The retry ladder spends no
-        # call here: the copy carries the "INDEX: [1]" label, whose stray 1
-        # reads as an invented number, and an invented number is not
-        # retried.)
+        # Probe, the anti-copy retry, then the reword pass -- and crucially
+        # it stops there rather than walking on to CANDIDATE_B: the model
+        # engaged with CANDIDATE_A instead of answering NOT_FOUND, so the
+        # topic is settled and only the wording failed.
         self.assertEqual(post.call_count, 3)
         self.assertEqual(reword_calls(post), 1)
 
@@ -753,8 +679,8 @@ class QuestionShapeGuardTests(unittest.TestCase):
                                         "The boys' hostels are AHALYA and ARUNDHATHI."}}
         reworded = "You'll be in either AHALYA or ARUNDHATHI -- those are the boys' hostels."
         with patch("app.llm.requests.post", side_effect=[
-                mock_response("NONE"), mock_response("NOT_FOUND"),
-                mock_response("NOT_FOUND"), mock_response(reworded)]):
+                mock_response("NOT_FOUND"), mock_response("NOT_FOUND"),
+                mock_response(reworded)]):
             chosen, text = disambiguate_and_answer("What are the hostels available for boys ?",
                                                     [POLAR_CANDIDATE, names_the_hostels])
         self.assertIs(chosen, names_the_hostels)
@@ -767,7 +693,7 @@ class QuestionShapeGuardTests(unittest.TestCase):
         # hostel and counts nothing. Every candidate refused the question, so
         # only topical overlap was carrying this record.
         with patch("app.llm.requests.post", side_effect=[
-                mock_response("NONE"), mock_response("NOT_FOUND"), mock_response("NOT_FOUND")]):
+                mock_response("NOT_FOUND"), mock_response("NOT_FOUND")]):
             self.assertIsNone(disambiguate_and_answer("How many hostels are there for boys ?",
                                                        [POLAR_CANDIDATE, WEAK_B]))
 
@@ -777,8 +703,8 @@ class QuestionShapeGuardTests(unittest.TestCase):
         # question -- answered.
         reworded = "Boys may head out of the hostels as long as they are back before 9:30 PM."
         with patch("app.llm.requests.post", side_effect=[
-                mock_response("NONE"), mock_response("NOT_FOUND"),
-                mock_response("NOT_FOUND"), mock_response(reworded)]):
+                mock_response("NOT_FOUND"), mock_response("NOT_FOUND"),
+                mock_response(reworded)]):
             chosen, text = disambiguate_and_answer("Are boys allowed to go outside the hostels?",
                                                     [POLAR_CANDIDATE, WEAK_B])
         self.assertIs(chosen, POLAR_CANDIDATE)
@@ -790,8 +716,8 @@ class QuestionShapeGuardTests(unittest.TestCase):
         # what/when/how-many question rejects on shape.
         reworded = "Boys can go out of the hostels, but they need to be back by 9:30 PM."
         with patch("app.llm.requests.post", side_effect=[
-                mock_response("NONE"), mock_response("NOT_FOUND"),
-                mock_response("NOT_FOUND"), mock_response(reworded)]):
+                mock_response("NOT_FOUND"), mock_response("NOT_FOUND"),
+                mock_response(reworded)]):
             chosen, text = disambiguate_and_answer("boys hostel outing", [POLAR_CANDIDATE, WEAK_B])
         self.assertIs(chosen, POLAR_CANDIDATE)
         self.assertEqual(text, reworded)
@@ -804,8 +730,8 @@ class QuestionShapeGuardTests(unittest.TestCase):
         # where an engaged-with record is still the wrong record.
         drifted = "Boys can go outside the hostels but must be back before 10:30 PM."
         with patch("app.llm.requests.post", side_effect=[
-                mock_response("INDEX: 1"), mock_response(drifted),
-                mock_response("NOT_FOUND"), mock_response("NOT_FOUND")]):
+                mock_response(drifted), mock_response("NOT_FOUND"),
+                mock_response("NOT_FOUND")]):
             self.assertIsNone(disambiguate_and_answer("How many hostels are there for boys ?",
                                                        [POLAR_CANDIDATE]))
 
