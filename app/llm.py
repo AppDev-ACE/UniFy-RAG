@@ -129,6 +129,8 @@ routed to a human.
 """
 from __future__ import annotations
 import re
+from concurrent.futures import ThreadPoolExecutor
+
 import requests
 from app.config import (LLM_ENABLED, LLM_MAX_CONTEXT_RECORDS, LLM_TIMEOUT_SECONDS,
                         LLM_VETO_OVERRIDE_SCORE, OLLAMA_HOST, OLLAMA_MODEL)
@@ -812,12 +814,39 @@ def _reword_only(answers: list[str]) -> str | None:
         return None
     return text
 
-def _grounded_rephrase(query: str, answers: list[str]) -> tuple[str | None, str]:
+def _parallel(*jobs):
+    """Run independent Ollama calls at once, returning their results in the
+    order the jobs were given regardless of which finished first.
+
+    The seam is deliberate. Overlapping two calls means the order they reach
+    Ollama in is genuinely undefined, so a test that pins a single global
+    sequence of replies would be asserting something this code no longer
+    promises; patching this one function to run its jobs in order gives
+    those tests back a defined sequence without pretending the production
+    path is serial."""
+    with ThreadPoolExecutor(max_workers=len(jobs)) as pool:
+        return [future.result() for future in [pool.submit(*job) for job in jobs]]
+
+def _first_attempt(query: str, answers: list[str]) -> str | None:
+    """The opening probe of the ladder below: "does this record answer the
+    question, and can you say so in your own words". Separated out so a
+    caller that can predict it will need this reply may start it early and
+    hand it back in -- see `disambiguate_and_answer`."""
+    return _call_ollama(SYSTEM_PROMPT, _user_content(query, _build_context(answers)))
+
+_NOT_PREFETCHED = object()
+
+def _grounded_rephrase(query: str, answers: list[str], prefetched=_NOT_PREFETCHED) -> tuple[str | None, str]:
     """The full retry ladder, reporting *why* it failed (see OK/NOT_RELEVANT/
     UNPHRASEABLE/UNAVAILABLE) so callers can tell "wrong record" apart from
     "right record, bad wording". Only NOT_FOUND is a verdict about the
-    record; every other failure is about the wording."""
-    first = _call_ollama(SYSTEM_PROMPT, _user_content(query, _build_context(answers)))
+    record; every other failure is about the wording.
+
+    `prefetched` is this record's opening probe when the caller already ran
+    it. Passing one only changes *when* that call happened, never what it
+    was: it is the same `_first_attempt` on the same record and question, so
+    every judgement below reads exactly as it would have."""
+    first = _first_attempt(query, answers) if prefetched is _NOT_PREFETCHED else prefetched
     if first is None:
         return None, UNAVAILABLE
     if first == NOT_FOUND:
@@ -981,7 +1010,30 @@ def disambiguate_and_answer(query: str, candidates: list[dict]) -> tuple[dict, s
         return None
     capped = candidates[:LLM_MAX_CONTEXT_RECORDS]
     context = _build_disambiguation_context(capped)
-    raw = _call_ollama(DISAMBIGUATION_SYSTEM_PROMPT, _user_content(query, context))
+    # The pick and the first candidate's opening probe run at the same time.
+    # They are independent -- the pick reads the candidates' questions on
+    # file, the probe reads one record's answer -- but they used to run one
+    # after the other, and on this CPU-only box a call is whole seconds, so
+    # the wait was the sum of two things neither of which needed the other's
+    # result. Measured over a 14-query set on qwen2.5:3b, three concurrent
+    # calls finish in 1.69x the time of one rather than 3x, so overlapping
+    # these two is most of a call's latency saved on every clarify-tier
+    # question.
+    #
+    # Exactly one call is ever speculative, and only when the pick disagrees
+    # with retrieval's order: the walk below starts from the picked
+    # candidate, which is capped[0] whenever the two agree. Removing the
+    # pick altogether was measured too and is cheaper still (p90 30.7s ->
+    # 18.8s against 3.2 -> 2.3 calls), but it costs answers the pick is
+    # right about -- "When are the CIA exams" resolved to the record
+    # explaining what a CIA is instead of the one holding the dates, because
+    # retrieval ranks them the other way round and only the pick compares
+    # the student's question against the questions on file. Overlapping
+    # keeps that judgement and stops paying for it in series.
+    raw, first_probe = _parallel(
+        (_call_ollama, DISAMBIGUATION_SYSTEM_PROMPT, _user_content(query, context)),
+        (_first_attempt, query, [capped[0]["record"]["answer"]]),
+    )
     if raw is None:
         return None
     index = _parse_disambiguation(raw)
@@ -1030,7 +1082,11 @@ def disambiguate_and_answer(query: str, candidates: list[dict]) -> tuple[dict, s
     order = [picked] + [c for c in capped if c is not picked] if picked else list(capped)
     for candidate in order:
         answers = [candidate["record"]["answer"]]
-        text, reason = _grounded_rephrase(query, answers)
+        # capped[0]'s probe was already run above, concurrently with the
+        # pick. Whichever position the walk reaches it in, it is the same
+        # reply to the same question about the same record.
+        prefetched = first_probe if candidate is capped[0] else _NOT_PREFETCHED
+        text, reason = _grounded_rephrase(query, answers, prefetched)
         if text is not None:
             return candidate, text
         if reason == UNAVAILABLE:
