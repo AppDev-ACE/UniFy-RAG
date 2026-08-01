@@ -15,6 +15,7 @@ RAW = ROOT / "sastra_freshers.json"
 OUT = ROOT / "data" / "corpus.json"
 QUEUE = ROOT / "data" / "review_queue.csv"
 OFFICIAL_SEED = ROOT / "data" / "official_seed.json"
+COMMUNITY_SEED = ROOT / "data" / "community_seed.json"
 HOSTEL_RULES_URL = "https://www.sastra.edu/downloads/news/2026/june/Hostel_Rules_Regulations_2026-27.pdf"
 HOSTEL_RULES_SOURCE = "Rules and Regulations for Inmates of Students’ Home (SASTRA official, effective 01 Jul 2026)"
 EXAM_RULES_URL = "https://sastra.edu/downloads/menu/Parents/2026/ExaminationRegulations_2026.pdf"
@@ -136,6 +137,18 @@ def main():
             if not required <= record.keys() or record["id"] in ids:
                 raise ValueError(f"Invalid or duplicate official seed: {record.get('id')}")
             records.append(record)
+    # Owner-vouched local/campus-life records (e.g. transport, nearby shops)
+    # with no official SASTRA source. Kept in their own reviewed file, same
+    # as OFFICIAL_SEED, so a future raw migration never overwrites them.
+    if COMMUNITY_SEED.exists():
+        seed = json.loads(COMMUNITY_SEED.read_text())
+        ids = {r["id"] for r in records}
+        for record in seed:
+            required = {"id", "questions", "answer", "status"}
+            if not required <= record.keys() or record["id"] in ids:
+                raise ValueError(f"Invalid or duplicate community seed: {record.get('id')}")
+            records.append(record)
+            ids.add(record["id"])
     # Exact legacy answer duplicates represent the same fact expressed as
     # separate records. Merge their phrasings into the earliest record and
     # retain the rest as auditable superseded history. Never merge active or

@@ -6,6 +6,7 @@ from typing import Literal
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 from app.config import INDEX_DIR, LOG_DIR, TAU_HIGH, TAU_LOW
+from app.llm import disambiguate_and_answer, synthesize_answer
 from app.retrieval import Retriever
 from app.safety import abstention, mandatory_route
 
@@ -42,12 +43,14 @@ def verification_status(record: dict) -> str:
         return "trusted_legacy"
     return "verified"
 
-def answer_payload(record: dict, confidence: float | None = None) -> dict:
+def answer_payload(record: dict, confidence: float | None = None, llm_answer: str | None = None) -> dict:
     response = {
-        "status": "answered", "answer": record["answer"], "source": record["source"],
+        "status": "answered", "answer": llm_answer if llm_answer is not None else record["answer"],
+        "raw_answer": record["answer"], "source": record["source"],
         "source_url": record["source_url"], "last_verified": record["last_verified"],
         "pair_id": record["id"], "verification_status": verification_status(record),
         "warning": record.get("stale_warning") or record.get("test_warning") or record.get("trusted_notice"),
+        "answer_mode": "llm_synthesized" if llm_answer is not None else "verbatim",
     }
     if confidence is not None:
         response["confidence"] = round(confidence, 3)
@@ -69,25 +72,64 @@ def ask(request: AskRequest):
         # same direct-answer behaviour without relaxing fuzzy-match safety.
         exact = searcher.exact_match(request.query)
         if exact:
-            response = answer_payload(exact["record"], 1.0)
+            llm_answer = synthesize_answer(request.query, {"record": exact["record"]})
+            response = answer_payload(exact["record"], 1.0, llm_answer)
         else:
             matches = searcher.search(request.query)
-            if not matches or matches[0]["score"] < TAU_LOW:
+            # Gate on the best evidence anywhere in the retrieved pool, not
+            # only whichever record RRF ranked first. RRF's ordering can put
+            # a weak or unrelated record in position 0 while a strong match
+            # -- one whose wording only overlaps the record's answer text,
+            # not any reviewed question -- sits at position 2 or 3. Basing
+            # the abstain decision on position 0 alone threw those away.
+            best_score = max((m["score"] for m in matches), default=0.0)
+            if not matches or best_score < TAU_LOW:
                 category = matches[0]["record"].get("category") if matches else None
                 response = abstention(category)
             elif matches[0]["score"] < TAU_HIGH:
-                # Do not pad a clarification with weakly related records merely
-                # to reach three suggestions.
+                # The cutoff is deliberately anchored to matches[0], not
+                # best_score: matches[0] is what the suggestion list is
+                # built from and displayed first, so a cutoff derived from a
+                # different (higher-scoring) record could exclude matches[0]
+                # from its own suggestion list. Do not pad a clarification
+                # with weakly related records merely to reach three
+                # suggestions.
                 minimum_suggestion_score = max(0.12, matches[0]["score"] * 0.35)
-                response = {"status": "clarify", "suggestions": [
-                    {"pair_id": x["record"]["id"], "question": x["question"],
-                     "verification_status": verification_status(x["record"])}
-                    for x in matches[:3] if x["score"] >= minimum_suggestion_score
-                ]}
+                candidates = [x for x in matches[:3] if x["score"] >= minimum_suggestion_score]
+                # The LLM gets a vote here only on WHICH of these
+                # human-clarify-tier candidates answers the question -- it
+                # confirms exactly one and is grounded against only that
+                # one record's raw answer (see app.llm.disambiguate_and_answer).
+                # The confirmed record is NOT always the one it picked first:
+                # a pick whose own rephrase answers NOT_FOUND is disowned and
+                # the next candidate tried, so every field below must be read
+                # off the returned record, never off matches[0] or
+                # candidates[0].
+                # The end user is never shown a raw pick-list: once the LLM
+                # has confirmed a record, that record's topic is settled --
+                # (chosen, None) still means "this is the right record, the
+                # rephrase just didn't pass grounding," so it's served
+                # verbatim, not turned into a menu. Only a fully-unconfirmed
+                # pick (None) routes to a human.
+                disambiguated = disambiguate_and_answer(request.query, candidates)
+                if disambiguated:
+                    chosen, llm_answer = disambiguated
+                    response = answer_payload(chosen["record"], chosen["score"], llm_answer)
+                    if llm_answer is not None:
+                        response["answer_mode"] = "llm_disambiguated"
+                else:
+                    response = abstention(matches[0]["record"].get("category"))
             else:
                 x = matches[0]
-                response = answer_payload(x["record"], x["score"])
-    log({"event_id": str(uuid.uuid4()), "at": datetime.now(timezone.utc).isoformat(), "session_id": request.session_id, "query": request.query, "outcome": response["status"], "pair_id": response.get("pair_id"), "latency_ms": round((time.perf_counter()-started)*1000, 2)})
+                # LLM synthesis only ever runs once the confidence gate above
+                # has already accepted x as the answer; it rephrases, it does
+                # not get a vote on which record is correct. Only x is passed:
+                # the rest of the pool is not evidence for this answer, and
+                # grounding against it makes the completeness check
+                # unsatisfiable (see synthesize_answer's docstring).
+                llm_answer = synthesize_answer(request.query, x)
+                response = answer_payload(x["record"], x["score"], llm_answer)
+    log({"event_id": str(uuid.uuid4()), "at": datetime.now(timezone.utc).isoformat(), "session_id": request.session_id, "query": request.query, "outcome": response["status"], "pair_id": response.get("pair_id"), "answer_mode": response.get("answer_mode"), "latency_ms": round((time.perf_counter()-started)*1000, 2)})
     return response
 
 @app.get("/pairs/{pair_id}")

@@ -1,0 +1,1612 @@
+[
+  {
+    "id": "community_001_how_do_i_reach_thanjavur_from_campus",
+    "questions": [
+      "how do I reach thanjavur from campus",
+      "bus to thanjavur from sastra",
+      "Is there a direct bus from SASTRA to Thanjavur town?",
+      "ways to travel to thanjavur from college",
+      "How can I go to Thanjavur?"
+    ],
+    "answer": "There are buses running daily from Trichy to Thanjavur. You can board them near the college to reach Thanjavur.",
+    "category": "transport",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 1
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_002_how_do_i_reach_trichy_from_campus",
+    "questions": [
+      "how do I reach trichy from campus",
+      "bus to trichy from sastra",
+      "Is there a direct bus from SASTRA to Trichy?",
+      "ways to travel to trichy from college",
+      "How can I go to Trichy?"
+    ],
+    "answer": "There are buses running daily from Thanjavur to Trichy. You can board them near the college to reach Trichy.",
+    "category": "transport",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 2
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_003_how_much_does_the_bus_to_thanjavur_cost",
+    "questions": [
+      "how much does the bus to thanjavur cost",
+      "thanjavur bus ticket price from campus",
+      "How much money should I keep for a bus ride to Thanjavur?",
+      "What is the bus fare to Thanjavur?"
+    ],
+    "answer": "The bus fare to Thanjavur is around 16 rupees from Sastra University.",
+    "category": "transport",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": "2027-07-31",
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 3
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_004_how_much_does_the_bus_to_trichy_cost",
+    "questions": [
+      "how much does the bus to trichy cost",
+      "trichy bus ticket price from campus",
+      "How much money should I keep for a bus ride to Trichy?",
+      "What is the bus fare to Trichy?"
+    ],
+    "answer": "The bus fare to Trichy is around 40 rupees from Sastra University.",
+    "category": "transport",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": "2027-07-31",
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 4
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_005_what_time_do_local_buses_stop_running",
+    "questions": [
+      "what time do local buses stop running",
+      "last bus timing from campus",
+      "Can I catch a bus late at night from SASTRA?",
+      "Are buses available 24/7?"
+    ],
+    "answer": "Buses are available continuously until 8:00 PM. After that, bus availability is not guaranteed.",
+    "category": "transport",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": "2027-07-31",
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 5
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_006_any_shopping_mall_near_thanjavur",
+    "questions": [
+      "any shopping mall near thanjavur",
+      "where can I go shopping in thanjavur",
+      "Is there a mall close to the New Bus Stand in Thanjavur?",
+      "Is there any mall in Thanjavur?"
+    ],
+    "answer": "Yes, there is a mall called Langval Mall near the New Bus Stand highway.",
+    "category": "general",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 6
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_007_dmart_thanjavur_availability",
+    "questions": [
+      "dmart thanjavur availability",
+      "Does Thanjavur have a Dmart store?",
+      "closest Dmart to thanjavur",
+      "Is there a Dmart in Thanjavur?"
+    ],
+    "answer": "No, there is no Dmart in Thanjavur. However, Dmart is available in Trichy.",
+    "category": "general",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 7
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_008_dmart_trichy_location",
+    "questions": [
+      "dmart trichy location",
+      "Where exactly is Dmart situated in Trichy?",
+      "directions to dmart in trichy",
+      "Where is the Dmart in Trichy?"
+    ],
+    "answer": "Dmart is located near Palpanai Junction in Trichy.",
+    "category": "general",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 8
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_009_how_to_reach_thanjavur_railway_station_from_sastra",
+    "questions": [
+      "how to reach thanjavur railway station from sastra",
+      "route to thanjavur train station from campus",
+      "Is there direct transport from SASTRA to the Thanjavur railway station?",
+      "How can I go to Thanjavur Railway Station?"
+    ],
+    "answer": "From the campus, board a bus to Thanjavur New Bus Stand. From there, take another bus to the railway station",
+    "category": "transport",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 9
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_010_does_sastra_have_maharashtrian_students",
+    "questions": [
+      "does sastra have maharashtrian students",
+      "Do students from Maharashtra study at SASTRA?",
+      "is the student community at sastra diverse across states",
+      "Are there students from Maharashtra at Sastra University?"
+    ],
+    "answer": "Yes, students from Maharashtra come to study at Sastra University.",
+    "category": "general",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 10
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_011_telugu_movies_in_trichy_thanjavur_theatres",
+    "questions": [
+      "telugu movies in trichy thanjavur theatres",
+      "Can I watch Telugu films near campus?",
+      "do local theatres screen telugu movies",
+      "Are Telugu movies played in theaters?"
+    ],
+    "answer": "Yes, some Telugu movies are played in theaters located in Trichy and Thanjavur.",
+    "category": "general",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 11
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_012_dominos_pizza_in_thanjavur",
+    "questions": [
+      "dominos pizza in thanjavur",
+      "Does Thanjavur have a Domino's outlet?",
+      "where can I order dominos near thanjavur",
+      "Is Domino’s present in Thanjavur?"
+    ],
+    "answer": "Yes, Domino’s is present in Thanjavur.",
+    "category": "general",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 12
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_013_pizza_hut_thanjavur_availability",
+    "questions": [
+      "pizza hut thanjavur availability",
+      "Does Thanjavur have a Pizza Hut outlet?",
+      "is there a pizza hut branch in thanjavur town",
+      "Is Pizza Hut present in Thanjavur?"
+    ],
+    "answer": "No, Pizza Hut is not present in Thanjavur.",
+    "category": "general",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 13
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_014_reliance_mart_in_thanjavur",
+    "questions": [
+      "reliance mart in thanjavur",
+      "Where can I buy groceries in Thanjavur town?",
+      "is there a reliance store near sastra",
+      "Is there a Reliance grocery store in Thanjavur?"
+    ],
+    "answer": "Yes, there is a Reliance grocery store in Thanjavur.",
+    "category": "general",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 14
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_015_laptop_shop_inside_sastra",
+    "questions": [
+      "laptop shop inside sastra",
+      "Is there a store on campus to buy a new laptop?",
+      "where to buy a laptop near sastra",
+      "Can we buy laptops int campus?"
+    ],
+    "answer": "No, laptops cannot be purchased at Sastra University.",
+    "category": "campus",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 15
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_016_can_i_keep_maggi_noodles_in_my_hostel_room",
+    "questions": [
+      "can I keep maggi noodles in my hostel room",
+      "Are instant noodles like Maggi banned in the hostel?",
+      "is maggi banned in the hostel",
+      "Is Maggi allowed in hostels?"
+    ],
+    "answer": "No, Maggi is not allowed in hostels.",
+    "category": "hostel",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 16
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_017_how_is_the_weather_in_thanjavur",
+    "questions": [
+      "how is the weather in thanjavur",
+      "Is Thanjavur's climate hotter than other cities?",
+      "should I expect very hot weather at sastra",
+      "Is the Thanjavur area very hot?"
+    ],
+    "answer": "Yes, the Thanjavur region is hotter compared to other areas.",
+    "category": "general",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 17
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_018_grocery_shop_in_vinaya_block",
+    "questions": [
+      "grocery shop in vinaya block",
+      "Where can I buy daily essentials near Vinaya hostel?",
+      "is there a store inside vinaya hostels",
+      "Is there a grocery store in Vinaya hostels?"
+    ],
+    "answer": "Yes, there is a grocery store in Vinaya Block 3.",
+    "category": "hostel",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 18
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_019_do_sastra_classrooms_have_ac",
+    "questions": [
+      "do sastra classrooms have ac",
+      "Is there air conditioning in the lecture halls?",
+      "are lecture halls air conditioned",
+      "Are classrooms equipped with air conditioning?"
+    ],
+    "answer": "No, classrooms are not equipped with air conditioning.",
+    "category": "campus",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 19
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_020_mobile_phones_allowed_in_lab",
+    "questions": [
+      "mobile phones allowed in lab",
+      "Is it okay to carry my phone into the laboratory?",
+      "what happens if I bring my phone to the lab",
+      "Can we take phones to the lab?"
+    ],
+    "answer": "No, phones are not allowed in the lab. Strict action will be taken if such activities are found.",
+    "category": "academics",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 20
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_021_how_to_get_a_research_project_with_a_professor",
+    "questions": [
+      "how to get a research project with a professor",
+      "Can first-year students work on research under faculty guidance?",
+      "does doing research depend on faculty interest",
+      "Can I do research projects under any faculty?"
+    ],
+    "answer": "Yes, you can, but it depends entirely on the faculty’s interest and your Skills.",
+    "category": "academics",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 21
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_022_post_office_inside_sastra_campus",
+    "questions": [
+      "post office inside sastra campus",
+      "Where do I collect a parcel my parents post to me?",
+      "is there a post office on campus",
+      "Can my parents send items through post?"
+    ],
+    "answer": "Yes, your parents can send items through post. You can collect them from the post office located inside the campus.",
+    "category": "campus",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 22
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_023_does_the_hostel_room_come_with_a_chair",
+    "questions": [
+      "does the hostel room come with a chair",
+      "What furniture is provided in the hostel room?",
+      "is a chair given in the hostel room",
+      "Is a chair provided in hostel rooms?"
+    ],
+    "answer": "Yes, every person is provided with a single chair in their respective hostel rooms.",
+    "category": "hostel",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 23
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_024_is_non_veg_food_allowed_in_hostel",
+    "questions": [
+      "is non veg food allowed in hostel",
+      "What kind of food can I keep in my hostel room?",
+      "can I store non vegetarian food in the hostel",
+      "Can I bring food items to the hostel?"
+    ],
+    "answer": "Yes, you can bring food items to the hostel, but only vegetarian food is allowed. Non-vegetarian food is strictly prohibited inside the campus and hostels.",
+    "category": "hostel",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 24
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_025_veg_pickle_allowed_in_hostel",
+    "questions": [
+      "veg pickle allowed in hostel",
+      "Is it fine to carry homemade pickle to the hostel?",
+      "can I bring homemade pickles to my room",
+      "Can I bring pickles to the hostel?"
+    ],
+    "answer": "Yes, you can bring pickles to the hostel, but only vegetarian pickles are allowed.",
+    "category": "hostel",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 25
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_026_phone_repair_near_gurunath_stores",
+    "questions": [
+      "phone repair near gurunath stores",
+      "Where can I get my phone screen fixed near campus?",
+      "is there a mobile repair shop near campus",
+      "Is there a mobile repair shop inside or near the campus?"
+    ],
+    "answer": "Yes, there is a mobile repair shop inside the campus near Gurunath Stores.",
+    "category": "campus",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 26
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_027_ncc_enrollment_at_sastra",
+    "questions": [
+      "ncc enrollment at sastra",
+      "Am I eligible to join NCC as a fresher?",
+      "can freshers join ncc at sastra",
+      "Can I join NCC?"
+    ],
+    "answer": "Yes, you can join NCC if you are eligible.",
+    "category": "campus",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 27
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_028_chips_and_biscuits_shop_in_hostel",
+    "questions": [
+      "chips and biscuits shop in hostel",
+      "Where can I get packaged snacks inside the hostel?",
+      "can I buy packaged snacks in the hostel",
+      "Can we buy snacks in the hostel?"
+    ],
+    "answer": "Yes, you can buy packaged snacks such as chips and biscuits from the grocery store available in hostels.",
+    "category": "hostel",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 28
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_029_sports_shoes_allowed_in_class",
+    "questions": [
+      "sports shoes allowed in class",
+      "Is it fine to wear sneakers to college on regular days?",
+      "can I wear sneakers to college",
+      "Can I wear sports shoes to college?"
+    ],
+    "answer": "Yes, you can wear sports shoes to college.",
+    "category": "campus",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 29
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_030_shoe_rule_for_lab_sastra",
+    "questions": [
+      "shoe rule for lab sastra",
+      "Do I have to wear the specified black shoes in the laboratory?",
+      "are sports shoes banned in the lab",
+      "Can I wear sports shoes instead of black shoes in the lab?"
+    ],
+    "answer": "No, only the black shoes specified by the campus are allowed in the lab.",
+    "category": "academics",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 30
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_031_leaving_class_in_between_allowed",
+    "questions": [
+      "leaving class in between allowed",
+      "Is it okay to step out of a lecture midway?",
+      "can I exit class before it ends",
+      "Can I go out in the middle of class?"
+    ],
+    "answer": "No, you cannot leave the class unless it is an emergency.",
+    "category": "academics",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 31
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_032_does_hostel_room_have_hangers",
+    "questions": [
+      "does hostel room have hangers",
+      "Where are the hangers fixed in the hostel room?",
+      "are hangers given in the hostel room",
+      "Are hangers provided in hostel rooms?"
+    ],
+    "answer": "Yes, hangers are provided in the room. They are fitted to the back of the door.",
+    "category": "hostel",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 32
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_033_is_canteen_food_expensive_at_sastra",
+    "questions": [
+      "is canteen food expensive at sastra",
+      "How costly is the food at the campus canteens?",
+      "are sastra canteen prices reasonable",
+      "Are the prices of food in the college canteens affordable?"
+    ],
+    "answer": "Yes, the prices of food in the canteens of Sastra University are good and affordable.",
+    "category": "campus",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 33
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_034_do_seniors_help_freshers_at_sastra",
+    "questions": [
+      "do seniors help freshers at sastra",
+      "Can I approach seniors if I'm stuck with a problem?",
+      "will seniors guide freshers with issues",
+      "Will seniors assist us with problems we face?"
+    ],
+    "answer": "Yes, seniors will assist and guide you to solve the problems you face, if possible.",
+    "category": "general",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 34
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_035_how_often_does_power_go_out_on_campus",
+    "questions": [
+      "how often does power go out on campus",
+      "Does SASTRA face frequent power cuts?",
+      "is there frequent power failure in hostels",
+      "Is there a power cut in the hostels and college?"
+    ],
+    "answer": "No, there is generally no power cut in the college or hostels. If there is any, power will be restored within 5 minutes.",
+    "category": "hostel",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 35
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_036_how_qualified_are_sastra_professors",
+    "questions": [
+      "how qualified are sastra professors",
+      "Are the teaching faculty at SASTRA well qualified?",
+      "is sastra faculty good",
+      "Is the faculty in Sastra University good?"
+    ],
+    "answer": "Yes, all the faculty members at Sastra University are highly qualified and hold advanced degrees from reputed institutions.",
+    "category": "academics",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 36
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_037_lab_dress_stitching_near_campus",
+    "questions": [
+      "lab dress stitching near campus",
+      "Where do I get my lab uniform tailored?",
+      "how much does the lab dress cost and where to buy it",
+      "Where can I buy my lab dress?"
+    ],
+    "answer": "You can purchase your lab dress at Ertex Tailors near Gurunath. The lab dress is custom-made, so you need to provide your measurements. It will be ready within a week and costs around 1500. Shoes are also available there if you wish.",
+    "category": "academics",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": "2027-07-31",
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 37
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_038_hostel_laundry_cost",
+    "questions": [
+      "hostel laundry cost",
+      "How much does washing clothes cost in the hostel?",
+      "is laundry included in the hostel fees",
+      "Is laundry service available in the hostel?"
+    ],
+    "answer": "Yes, laundry service is available in the hostel, but it is not included in the hostel fees. You pay separately whenever you wish to wash your clothes. The cost is around 110 for 10 pairs of clothes.",
+    "category": "hostel",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": "2027-07-31",
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 38
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_039_hostel_room_lock_and_keys",
+    "questions": [
+      "hostel room lock and keys",
+      "How many keys do we get for the hostel room lock?",
+      "can I put a lock on my hostel room door",
+      "Can I lock my hostel room?"
+    ],
+    "answer": "Yes, you can lock your hostel room for security. If it is a shared room, you may lock it only if the other members agree. Typically, 2 to 3 keys are provided for the lock.",
+    "category": "hostel",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 39
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_040_how_is_hostel_mess_food",
+    "questions": [
+      "how is hostel mess food",
+      "Does the hostel serve good quality food?",
+      "is the food quality good in sastra hostels",
+      "Is the food in the hostel good?"
+    ],
+    "answer": "Yes, the food in all the hostels at Sastra University is good and tastes excellent.",
+    "category": "hostel",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 40
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_042_using_laptop_during_lecture",
+    "questions": [
+      "using laptop during lecture",
+      "Do I need the teacher's permission to use a laptop in class?",
+      "can I use my laptop during lectures",
+      "Can I bring my laptop to class?"
+    ],
+    "answer": "Yes, you can bring your laptop to class, but using it during class hours depends entirely on the teacher’s permission.",
+    "category": "academics",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 42
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_043_buying_daily_essentials_near_campus",
+    "questions": [
+      "buying daily essentials near campus",
+      "Where can I buy hostel essentials like buckets and mugs?",
+      "where to get buckets and mugs near sastra",
+      "Can I get buckets, mugs, etc. from the campus?"
+    ],
+    "answer": "Yes, you can purchase all essential items within or near the campus.",
+    "category": "campus",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 43
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_044_app_to_check_hostel_and_academic_info",
+    "questions": [
+      "app to check hostel and academic info",
+      "Which app shows my academic and hostel details?",
+      "how do I view my hostel details online",
+      "Where can I check my academic and hostel details?"
+    ],
+    "answer": "You can check all your academic and hostel-related details in an app called Unify.",
+    "category": "unify",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 44
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_045_non_veg_food_rule_sastra_campus",
+    "questions": [
+      "non veg food rule sastra campus",
+      "Can I eat non-vegetarian food outside the campus gates?",
+      "is non veg banned only inside campus",
+      "Is non-vegetarian food allowed inside the campus?"
+    ],
+    "answer": "No, non-vegetarian food is strictly not allowed inside the campus. Necessary action will be taken if found, but you may have it outside the campus.",
+    "category": "hostel",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 45
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_047_atm_on_campus",
+    "questions": [
+      "atm on campus",
+      "Where can I withdraw cash near SASTRA?",
+      "are there atms near the hostel",
+      "How can I get cash if I run short?"
+    ],
+    "answer": "There are multiple ATMs within and outside the campus where you can deposit or withdraw cash.",
+    "category": "finance",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 47
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_048_hostel_gate_closing_time",
+    "questions": [
+      "hostel gate closing time",
+      "What is the hostel entry deadline at night?",
+      "what time does the hostel gate close at night",
+      "Until what time are students permitted to enter the hostel at night?"
+    ],
+    "answer": "Students are allowed to enter the hostel until 9:30 PM, after which the gate closes.",
+    "category": "hostel",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 48
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_049_online_delivery_hub_on_campus",
+    "questions": [
+      "online delivery hub on campus",
+      "Where do I collect my Amazon or Flipkart parcel at SASTRA?",
+      "is there an online order pickup point on campus",
+      "Does Sastra University have facilities for delivering Flipkart, Amazon, or other online items?"
+    ],
+    "answer": "Yes, Sastra University has a facility for receiving online deliveries. There is a hub inside the college where you can collect your parcels.",
+    "category": "campus",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 49
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_050_girls_outing_rules_sastra",
+    "questions": [
+      "girls outing rules sastra",
+      "From which year can girls go out on Sundays?",
+      "can first year girls leave campus",
+      "Can girls go outside of the campus?"
+    ],
+    "answer": "Girls are not allowed to leave the campus without permission. However, from the second year onwards, they are permitted to go outside every Sunday and must return by 6:00 PM.",
+    "category": "hostel",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 50
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_051_monthly_mess_fee_sastra",
+    "questions": [
+      "monthly mess fee sastra",
+      "What is the approximate hostel mess fee including electricity and cleaning?",
+      "how much is mess fee per month",
+      "How much does the mess cost per month?"
+    ],
+    "answer": "The mess fee, along with cleaning and electricity charges for the hostels, is around 3500 to 4800 per month.",
+    "category": "finance",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": "2027-07-31",
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 51
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_052_boys_hostel_outing_time",
+    "questions": [
+      "boys hostel outing time",
+      "By what time must boys be back in the hostel?",
+      "can boys leave the hostel on weekends",
+      "Are boys allowed to go outside the hostels?"
+    ],
+    "answer": "Yes, boys are allowed to go outside the hostels, but they must return before 9:30 PM.",
+    "category": "hostel",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 52
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_053_movie_theatres_near_sastra",
+    "questions": [
+      "movie theatres near sastra",
+      "Where can I watch a movie near campus?",
+      "are there any theatres close to college",
+      "Are there any cinema theaters near the college?"
+    ],
+    "answer": "Yes, there are several cinema theaters near the college in Thanjavur and Trichy.",
+    "category": "general",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 53
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_054_hostel_complaint_portal",
+    "questions": [
+      "hostel complaint portal",
+      "How do I raise a grievance about my hostel room?",
+      "where do I complain about hostel room problems",
+      "Where can I report issues related to hostel rooms?"
+    ],
+    "answer": "There is a grievance option in your web portal where you can post your problems.",
+    "category": "hostel",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 54
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_055_network_coverage_on_campus",
+    "questions": [
+      "network coverage on campus",
+      "Is mobile network reception good throughout the campus?",
+      "how good is phone signal in hostel and college",
+      "How is the mobile signal inside the hostels and college?"
+    ],
+    "answer": "The mobile signal is fairly good in some areas and weak in others.",
+    "category": "campus",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 55
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_056_bus_stops_from_sastra_to_trichy",
+    "questions": [
+      "bus stops from sastra to trichy",
+      "Does the bus to Trichy stop many times on the way?",
+      "number of stops on the trichy bus route",
+      "How many stops are there between SASTRA and Trichy?"
+    ],
+    "answer": "You need to check the specific bus route, as the number of stops depends on whether it is an express or local bus.",
+    "category": "transport",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 56
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_057_bus_stops_from_sastra_to_thanjavur",
+    "questions": [
+      "bus stops from sastra to thanjavur",
+      "What are the main stops on the way to Thanjavur?",
+      "number of stops on the thanjavur bus route",
+      "How many stops are there between SASTRA and Thanjavur?"
+    ],
+    "answer": "The main stops are the New Bus Stand followed by the Old Bus Stand.",
+    "category": "transport",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 57
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_058_local_bus_operating_hours_near_sastra",
+    "questions": [
+      "local bus operating hours near sastra",
+      "From what time do local buses start and stop running?",
+      "what hours do local buses run",
+      "What are the timings for local buses to these places?"
+    ],
+    "answer": "Local buses are generally available from 6:00 AM to 9:00 PM.",
+    "category": "transport",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": "2027-07-31",
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 58
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_059_good_restaurants_near_thanjavur_and_trichy",
+    "questions": [
+      "good restaurants near thanjavur and trichy",
+      "Where should I go for a nice meal outside campus?",
+      "best places to eat outside sastra",
+      "What are the popular places to eat out in Thanjavur?"
+    ],
+    "answer": "In Thanjavur, popular spots include Barbequeen, KFC, and various Mandi restaurants. If you are visiting Trichy, Kannappa Hotel is a great option.",
+    "category": "general",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 59
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_060_list_of_sastra_fests",
+    "questions": [
+      "list of sastra fests",
+      "What fests happen at SASTRA and in what order?",
+      "names of college fests at sastra",
+      "What are the major college fests?"
+    ],
+    "answer": "The main college fests are Carpe Diem, Colosseum, Daksh, and Kuruksastra, held in that sequence. Exact dates are available in the academic calendar.",
+    "category": "campus",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 60
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_061_fest_rules_for_girls_and_boys",
+    "questions": [
+      "fest rules for girls and boys",
+      "Do girls have separate rules during fest nights?",
+      "what are the rules during college fest days",
+      "Are there any restrictions during college fests?"
+    ],
+    "answer": "For boys, normal rules apply. However, girls must stay within assigned venues on campus after 6:30 PM and are allowed to stay until the event finishes.",
+    "category": "campus",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 61
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_062_seating_arrangement_during_dj_night_colosseum",
+    "questions": [
+      "seating arrangement during dj night colosseum",
+      "Is there separate seating for boys and girls at fest events?",
+      "are boys and girls seated separately at fests",
+      "Are boys and girls segregated during fest events?"
+    ],
+    "answer": "Yes, seating and crowd areas are segregated during musical/DJ nights and Colosseum games.",
+    "category": "campus",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 62
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_063_nearest_hospital_to_sastra",
+    "questions": [
+      "nearest hospital to sastra",
+      "Who do I contact for a medical emergency at SASTRA?",
+      "which hospitals are near thanjavur campus",
+      "What should be done in case of a medical emergency on campus?"
+    ],
+    "answer": "In an emergency, the hostel warden or campus medical authorities will immediately arrange transport to the nearest hospital. Major hospitals in and around Thanjavur include Thanjavur Medical College Hospital (TMCH), Meenakshi Hospital, Vinodhagan Memorial Hospital, and Srikamatchi Medical Centre.",
+    "category": "health",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 63
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_065_hostel_curfew_time_boys_girls",
+    "questions": [
+      "hostel curfew time boys girls",
+      "By when do I need to be back in the hostel daily?",
+      "what is the daily hostel in time",
+      "What are the general in-times for hostels on regular days?"
+    ],
+    "answer": "Hostel in-times are strictly enforced. Girls must report back to their hostels by 6:30 PM, whereas timings for boys vary slightly depending on their academic year and specific hostel rules.",
+    "category": "hostel",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 65
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_066_can_freshers_bring_bike_to_sastra",
+    "questions": [
+      "can freshers bring bike to sastra",
+      "Is it okay to bring a car or bike in first year?",
+      "are first years allowed two wheelers on campus",
+      "Are first-year students allowed to bring two-wheelers or four-wheelers to campus?"
+    ],
+    "answer": "Motorized vehicles like bikes and cars are generally restricted for hostel students, especially first-years. Bicycles are recommended for commuting within the campus.",
+    "category": "transport",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 66
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_067_library_timings_sastra",
+    "questions": [
+      "library timings sastra",
+      "When does the central library open and close?",
+      "what are the central library opening hours",
+      "What are the operating hours of the Saraswathi Sadan Central Library?"
+    ],
+    "answer": "The library is usually open from early morning until late evening on regular working days, with extended operating hours during continuous assessment and end-semester exams.",
+    "category": "campus",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 67
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_068_food_options_besides_hostel_mess",
+    "questions": [
+      "food options besides hostel mess",
+      "What canteens are available on campus for quick meals?",
+      "where else can I eat besides the mess",
+      "Where can students eat on campus apart from the hostel mess?"
+    ],
+    "answer": "On-campus options include Green Cafe, Shanmugha Canteen, Green Bunnies, Canopy, and several snack outlets near major academic blocks offering quick meals, juices, and beverages.",
+    "category": "campus",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 68
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_069_outing_pass_procedure_sastra",
+    "questions": [
+      "outing pass procedure sastra",
+      "How do I get an outing pass approved by my parents?",
+      "how do I apply for a weekend outing pass",
+      "How do students get permission to go home or leave campus during weekends?"
+    ],
+    "answer": "Students must apply for leave/outing through the SASTRA web portal or student app. Parent authorization via SMS/call verification is required before the warden issues an outing pass.",
+    "category": "hostel",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 69
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  },
+  {
+    "id": "community_070_courier_collection_point_sastra",
+    "questions": [
+      "courier collection point sastra",
+      "Where do courier parcels get delivered on campus?",
+      "how do I receive courier parcels at sastra",
+      "What courier or postal delivery options are available on campus for students?"
+    ],
+    "answer": "Deliveries from Amazon, Flipkart, and major courier services are received at dedicated parcel collection points or post centers near the main entrance gates.",
+    "category": "campus",
+    "source": null,
+    "source_url": null,
+    "source_type": "unknown",
+    "effective_from": null,
+    "valid_until": null,
+    "status": "needs_review",
+    "last_verified": null,
+    "contact_fallback": null,
+    "legacy": {
+      "file": "newData.json",
+      "record_number": 70
+    },
+    "review_note": "Owner-vouched fresher/local-life record supplied via newData.json. Not an official SASTRA policy source; add an official primary source before activation."
+  }
+]

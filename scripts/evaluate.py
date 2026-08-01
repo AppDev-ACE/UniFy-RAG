@@ -15,16 +15,23 @@ def metrics(rows, retriever, low, high):
         expected = row["expected_pair_id"]
         matches = retriever.search(row["query"])
         ids = [m["record"]["id"] for m in matches]; score = matches[0]["score"] if matches else 0
+        # The abstain/clarify gate in app/main.py and scripts/chat.py checks
+        # the best score anywhere in the retrieved pool, not just position 0
+        # (a weak RRF top pick shouldn't hide a strong candidate at rank 2-3).
+        # Mirror that here so a swept/written threshold matches deployed
+        # behaviour. The auto-answer check stays on matches[0] specifically,
+        # since that is still the record that would actually be returned.
+        best_score = max((m["score"] for m in matches), default=0)
         if expected == "SHOULD_ABSTAIN":
             abstain_expected += 1
-            if score < low: abstain_correct += 1
-            if score < low: abstained += 1
+            if best_score < low: abstain_correct += 1
+            if best_score < low: abstained += 1
             continue
         hit1 += bool(ids and ids[0] == expected); hit3 += expected in ids
         if score >= high:
             answered += 1
             confident_wrong += not (ids and ids[0] == expected)
-        elif score < low: abstained += 1
+        elif best_score < low: abstained += 1
     total_answerable = len(rows) - abstain_expected
     return {"samples": len(rows), "hit_at_1": hit1 / total_answerable if total_answerable else None, "hit_at_3": hit3 / total_answerable if total_answerable else None, "wrong_answer_rate": confident_wrong / max(answered, 1), "answered_coverage": answered / max(total_answerable, 1), "abstention_precision": abstain_correct / max(abstained, 1), "abstention_recall": abstain_correct / max(abstain_expected, 1)}
 

@@ -3,6 +3,9 @@ from pathlib import Path
 from app.retrieval import Retriever, normalize
 from app.safety import abstention, mandatory_route
 
+ROOT = Path(__file__).resolve().parents[1]
+CORPUS_PATH = ROOT / "data" / "corpus.json"
+
 class RetrievalTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory(); root = Path(self.temp.name)
@@ -29,5 +32,53 @@ class RetrievalTests(unittest.TestCase):
         response = abstention("hostel")
         self.assertEqual(response["contacts"][0]["label"], "Campus seniors or fresher volunteers")
         self.assertNotIn("email", response["contacts"][0])
+
+class DressCodeDisambiguationTests(unittest.TestCase):
+    """Regression test for a real bug: a fresher asking about the lab-specific
+    uniform policy ("dress code for lab") was matched to unrelated records
+    ("gym dress code", general "campus dress code") that happen to share the
+    literal phrase "dress code", while the correct lab-uniform record was
+    filtered out of the results entirely. Fixed by making synonym expansion
+    (dress <-> uniform/attire) a query-side-only bridge, never indexed into
+    documents -- a record merely containing the word "dress" must not gain
+    false "uniform" affinity.
+
+    Built from the real data/corpus.json (BM25 only, no vectors.npy -- this
+    discrimination was verified to hold on the sparse channel alone, so the
+    test stays fast and self-sufficient without needing an index build or
+    the embedding model) because the bug is specifically about how these
+    three real records compete against each other; a synthetic fixture
+    would not reproduce it.
+    """
+    @classmethod
+    def setUpClass(cls):
+        corpus = json.loads(CORPUS_PATH.read_text())
+        active = [r for r in corpus if r.get("status") != "superseded"]
+        questions = [{"record_index": i, "question": q} for i, r in enumerate(active) for q in r["questions"]]
+        cls.temp = tempfile.TemporaryDirectory(); root = Path(cls.temp.name)
+        (root / "records.json").write_text(json.dumps(active))
+        (root / "questions.json").write_text(json.dumps(questions))
+        cls.r = Retriever(root)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.temp.cleanup()
+
+    def top_id(self, query):
+        matches = self.r.search(query)
+        return matches[0]["record"]["id"] if matches else None
+
+    def test_lab_specific_query_matches_lab_uniform_record(self):
+        for query in ("dress code for lab", "lab dress code", "what to wear in lab"):
+            with self.subTest(query=query):
+                self.assertTrue(self.top_id(query).startswith("legacy_020"))
+
+    def test_general_campus_query_matches_general_dress_code_record(self):
+        for query in ("what is the dress code in campus", "is there any dress code"):
+            with self.subTest(query=query):
+                self.assertTrue(self.top_id(query).startswith("legacy_155"))
+
+    def test_gym_query_matches_gym_record(self):
+        self.assertTrue(self.top_id("gym dress code").startswith("legacy_040"))
 
 if __name__ == "__main__": unittest.main()
