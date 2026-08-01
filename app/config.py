@@ -52,13 +52,21 @@ RRF_K = 60
 # documents 0.592, hostel rules for boys 0.845, girls' outing rules 0.904).
 # Off-corpus questions -- swimming pool, US visas, driving licences, stock
 # prices, yesterday's cricket -- top out at 0.407 ("can I keep a pet dog in
-# the hostel" reaching the maggi-noodles record). 0.5 sits in that gap with
-# room on both sides. It is a heuristic standing in for a real calibration,
-# and should be replaced the moment data/golden_set.json has consented
-# labelled fresher questions in it; unlike TAU_HIGH it cannot cause a
-# *fabricated* answer, only the serving of a strongly-matched reviewed
-# record, so it is not the unsafe kind of uncalibrated threshold.
-LLM_VETO_OVERRIDE_SCORE = float(os.environ.get("LLM_VETO_OVERRIDE_SCORE", "0.5"))
+# the hostel" reaching the maggi-noodles record). It is a heuristic standing
+# in for a real calibration, and should be replaced the moment
+# data/golden_set.json has consented labelled fresher questions in it;
+# unlike TAU_HIGH it cannot cause a *fabricated* answer, only the serving of
+# a strongly-matched reviewed record, so it is not the unsafe kind of
+# uncalibrated threshold.
+#
+# Lowered from 0.5 to 0.42 after two more real vetoed-but-correct cases
+# surfaced in production: "whether stationery shop is available" (0.463,
+# correct record was legacy_159) and "whether buses to Thanjavur and Trichy
+# is frequently available" (0.444, correct record was community_002) -- both
+# below the old 0.5 floor. 0.42 keeps the same gap logic as before: it stays
+# above the known off-corpus ceiling of 0.407 (with margin, so those queries
+# still abstain) while sitting below both new confirmed-correct scores.
+LLM_VETO_OVERRIDE_SCORE = float(os.environ.get("LLM_VETO_OVERRIDE_SCORE", "0.42"))
 
 OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "http://127.0.0.1:11434")
 OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "qwen2.5:3b")

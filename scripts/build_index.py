@@ -72,18 +72,26 @@ def main():
     (OUT / "vectors.npy").unlink(missing_ok=True)
     (OUT / "records.json").write_text(json.dumps(active, ensure_ascii=False))
     (OUT / "questions.json").write_text(json.dumps(questions, ensure_ascii=False))
-    (OUT / "build_report.json").write_text(json.dumps({"built_on": today.isoformat(), "records": len(active), "question_phrasings": len(questions), "test_mode_include_needs_review": args.include_needs_review, "include_trusted_legacy": include_trusted_legacy, "skipped": skipped}, indent=2))
+    dense_embeddings, dense_error = False, None
     try:
         import numpy as np
         from sentence_transformers import SentenceTransformer
         model = SentenceTransformer("BAAI/bge-small-en-v1.5")
         vectors = model.encode([x["question"] for x in questions], normalize_embeddings=True, show_progress_bar=True)
         np.save(OUT / "vectors.npy", vectors)
+        dense_embeddings = True
         mode = " (TEST MODE: unverified legacy records included)" if args.include_needs_review else " (TRUSTED LEGACY: owner-approved records included)" if include_trusted_legacy else ""
         print("Built hybrid dense + sparse index", len(active), "records", len(questions), "phrasings" + mode)
     except Exception as exc:
         # A missing/offline model must never prevent the conservative BM25
-        # service from starting. The reason is surfaced for operators.
-        print(f"Built sparse index; dense BGE vectors were not created ({type(exc).__name__}: {exc}).")
+        # service from starting, so this stays non-fatal. But a print()
+        # alone is easy to miss on a deploy and silently ships keyword-only
+        # search -- this is exactly what happened in production (dense
+        # retrieval was off for an unknown period with no visible signal).
+        # Recording it in build_report.json makes the degraded state
+        # something a health check or operator can actually catch.
+        dense_error = f"{type(exc).__name__}: {exc}"
+        print(f"WARNING: Built sparse-only index; dense BGE vectors were NOT created ({dense_error}). Retrieval quality is degraded -- see data/index/build_report.json.")
+    (OUT / "build_report.json").write_text(json.dumps({"built_on": today.isoformat(), "records": len(active), "question_phrasings": len(questions), "test_mode_include_needs_review": args.include_needs_review, "include_trusted_legacy": include_trusted_legacy, "dense_embeddings": dense_embeddings, "dense_embeddings_error": dense_error, "skipped": skipped}, indent=2))
 
 if __name__ == "__main__": main()

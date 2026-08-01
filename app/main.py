@@ -58,7 +58,8 @@ def answer_payload(record: dict, confidence: float | None = None, llm_answer: st
 
 @app.get("/health")
 def health():
-    return {"ok": True, "index_ready": (INDEX_DIR / "records.json").exists()}
+    return {"ok": True, "index_ready": (INDEX_DIR / "records.json").exists(),
+             "dense_retrieval": (INDEX_DIR / "vectors.npy").exists()}
 
 @app.post("/ask")
 def ask(request: AskRequest):
