@@ -1065,18 +1065,33 @@ def disambiguate_and_answer(query: str, candidates: list[dict]) -> tuple[dict, s
     # Below it, the model's refusal and weak retrieval agree, and that is a
     # real abstention: route to a human.
     #
-    # With one exception, and it is the case the override was never meant to
-    # cover: here every candidate has refused the question, so the record is
-    # carried entirely by its retrieval score -- and a score is topical
-    # overlap, which "hostels ... boys" earns just as easily from the outing
-    # -time record as from the one that names the hostels. When that record
-    # is also shaped as a reply to a yes/no question the student did not
-    # ask, the two independent signals agree that it answers something else,
-    # and abstaining is the honest outcome. The override's own confirmed
-    # cases are unaffected: "whether stationery shop is available" is itself
-    # a yes/no question, and "hostel rules for boys" and "girls' outing
-    # rules" resolve to records that do not open with a verdict.
-    best = max(capped, key=lambda c: c["score"])
-    if best["score"] >= LLM_VETO_OVERRIDE_SCORE and not _shape_mismatch(query, best["record"]):
-        return best, _reword_only([best["record"]["answer"]])
+    # Which record the override answers from matters as much as whether it
+    # fires. Every candidate has refused the question by now, so the choice
+    # rests entirely on retrieval score -- and a score is topical overlap,
+    # which "hostels ... boys" earns just as easily from the outing-time
+    # record as from the one that names the hostels. Those two really do
+    # arrive a hair apart (0.609 and 0.597 in production), and taking the
+    # maximum answered "What are the hostels available for boys?" with "Yes,
+    # boys are allowed to go outside the hostels, but they must return
+    # before 9:30 PM".
+    #
+    # A stored answer written as a reply to a yes/no question is the second
+    # signal, independent of the score, that a record answers something the
+    # student did not ask -- so those records are set aside here and the
+    # override answers from the best-scoring record that remains. Setting
+    # aside rather than abstaining is the point: the record that does answer
+    # the question is usually still in the pool, a fraction of a point
+    # behind, and abstaining throws it away along with the wrong one.
+    #
+    # The override's own confirmed cases are unaffected: "whether stationery
+    # shop is available" is itself a yes/no question, so nothing is set
+    # aside for it, and "hostel rules for boys" and "girls' outing rules"
+    # resolve to records that do not open with a verdict. If every candidate
+    # is set aside, or the best survivor is weak, this abstains exactly as
+    # before.
+    eligible = [c for c in capped if not _shape_mismatch(query, c["record"])]
+    if eligible:
+        best = max(eligible, key=lambda c: c["score"])
+        if best["score"] >= LLM_VETO_OVERRIDE_SCORE:
+            return best, _reword_only([best["record"]["answer"]])
     return None

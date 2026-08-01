@@ -743,6 +743,23 @@ POLAR_CANDIDATE = {"score": 0.84, "question": "boys hostel outing time", "record
     "id": "p", "answer": "Yes, boys are allowed to go outside the hostels, but they must return before 9:30 PM."}}
 
 class QuestionShapeGuardTests(unittest.TestCase):
+    def test_override_falls_through_to_the_record_that_answers_the_question(self):
+        # The reported bug in full. Both records are strong and a hair apart
+        # -- the outing-time record edges it on score alone -- and the model
+        # has refused both. Setting the yes/no-shaped one aside leaves the
+        # record that actually names the hostels, which is the answer.
+        names_the_hostels = {"score": 0.597, "question": "which hostels are allotted to first years",
+                             "record": {"id": "h", "answer":
+                                        "The boys' hostels are AHALYA and ARUNDHATHI."}}
+        reworded = "You'll be in either AHALYA or ARUNDHATHI -- those are the boys' hostels."
+        with patch("app.llm.requests.post", side_effect=[
+                mock_response("NONE"), mock_response("NOT_FOUND"),
+                mock_response("NOT_FOUND"), mock_response(reworded)]):
+            chosen, text = disambiguate_and_answer("What are the hostels available for boys ?",
+                                                    [POLAR_CANDIDATE, names_the_hostels])
+        self.assertIs(chosen, names_the_hostels)
+        self.assertEqual(text, reworded)
+
     def test_value_question_does_not_get_a_yes_no_record_by_override(self):
         # The reported bug: "What are the hostels available for boys?" and
         # "How many hostels are there for boys?" both answered "Yes, boys are
