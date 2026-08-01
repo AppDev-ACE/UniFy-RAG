@@ -1,7 +1,8 @@
 import unittest
 from unittest.mock import patch
 import app.main as main
-from app.main import AskRequest, FeedbackRequest, ask, feedback, get_selected_pair, verification_status
+from app.main import (AskRequest, FeedbackRequest, answer_payload, ask, feedback,
+                      get_selected_pair, verification_status)
 
 class ApiContractTests(unittest.TestCase):
     def setUp(self):
@@ -76,6 +77,33 @@ class ApiContractTests(unittest.TestCase):
         self.assertEqual(result["answer_mode"], "verbatim")
         self.assertEqual(result["pair_id"], chosen_pair_id)
         self.assertEqual(result["answer"], result["raw_answer"])
+
+    # Most of this corpus is written as replies to yes/no questions, so a
+    # stored answer regularly opens "Yes, " even when the student asked
+    # "what" or "how many" -- and is served reading as the answer to a
+    # question nobody asked. Only the displayed `answer` is adjusted;
+    # `raw_answer` keeps the stored text, so attribution and the review loop
+    # see exactly what is in the index.
+    POLAR_RECORD = {
+        "id": "community_052_boys_hostel_outing_time",
+        "answer": "Yes, boys are allowed to go outside the hostels, but they must return before 9:30 PM.",
+        "source": "community", "source_url": None, "last_verified": "2026-07-28",
+    }
+
+    def test_answer_payload_drops_a_yes_opener_the_student_did_not_ask_for(self):
+        result = answer_payload(self.POLAR_RECORD, 0.84, query="How many hostels are there for boys ?")
+        self.assertEqual(result["answer"],
+                          "Boys are allowed to go outside the hostels, but they must return before 9:30 PM.")
+        self.assertEqual(result["raw_answer"], self.POLAR_RECORD["answer"])
+
+    def test_answer_payload_keeps_a_yes_opener_on_a_yes_no_question(self):
+        result = answer_payload(self.POLAR_RECORD, 0.84, query="Are boys allowed to go outside the hostels?")
+        self.assertEqual(result["answer"], self.POLAR_RECORD["answer"])
+
+    def test_answer_payload_without_a_query_is_untouched(self):
+        # /pairs/{pair_id}: the student tapped a reviewed question rather
+        # than typing one, so its stored phrasing is the question.
+        self.assertEqual(answer_payload(self.POLAR_RECORD)["answer"], self.POLAR_RECORD["answer"])
 
     def test_feedback_accepts_a_verified_pair(self):
         with patch("app.main.log"):

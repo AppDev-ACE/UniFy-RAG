@@ -1,7 +1,9 @@
 import unittest
 from unittest.mock import Mock, patch
 import requests
-from app.llm import REWORD_SYSTEM_PROMPT, _names_drifted, disambiguate_and_answer, synthesize_answer
+from app.llm import (REWORD_SYSTEM_PROMPT, _echoes_correction, _has_dangling_clause,
+                     _is_bare_enumeration, _names_drifted, disambiguate_and_answer,
+                     synthesize_answer)
 
 MATCH = {"record": {"id": "x", "answer": "The bus fare to Thanjavur is around 16 rupees."}}
 MATCH_WITH_TWO_NUMBERS = {"record": {"id": "z", "answer": "Classes run from 8:45 AM to 5:15 PM. First-year B.Tech students have an average of 6 class hours per day."}}
@@ -672,5 +674,122 @@ class DisambiguationTests(unittest.TestCase):
         # retried.)
         self.assertEqual(post.call_count, 3)
         self.assertEqual(reword_calls(post), 1)
+
+class CorrectionEchoTests(unittest.TestCase):
+    """A retry that recites the correction's own list back instead of
+    rewriting the answer. Every grounding check passes it by construction --
+    the correction is assembled out of the source's figures, names and
+    sentences -- so it reached students as the whole answer."""
+
+    def test_retry_that_echoes_the_correction_is_rejected(self):
+        drops_a_number = "Classes run from 8:45 AM to 5:15 PM for first-year B.Tech students."
+        echo = ('6 and these statements: "First-year B.Tech students have an '
+                'average of 6 class hours per day."')
+        with patch("app.llm.requests.post", side_effect=[
+                mock_response(drops_a_number), mock_response(echo)]):
+            self.assertIsNone(synthesize_answer("what are the class timings",
+                                                 MATCH_WITH_TWO_NUMBERS, reword_on_failure=False))
+
+    def test_scaffolding_phrases_and_bare_lists_are_both_caught(self):
+        observed = ('3, 2, Continuous, Internal, Assessments, Three, CIAs and these '
+                    'statements: "The best of 2 from the three is considered as the '
+                    'final internal marks".')
+        self.assertTrue(_echoes_correction(observed))
+        self.assertTrue(_is_bare_enumeration(observed))
+        # A real answer that happens to list things is not a bare list: its
+        # first comma-separated fragment is a clause, not a token.
+        self.assertFalse(_is_bare_enumeration(
+            "The boys' hostels are AHALYA and ARUNDHATHI, and the girls' hostels are "
+            "SANDIPANI SADAN and RAJALAKSHMI VIHAR."))
+        self.assertFalse(_echoes_correction("Three CIAs are held each semester."))
+
+class DanglingClauseTests(unittest.TestCase):
+    def test_trailing_fragment_is_not_served(self):
+        # "...if possible" re-punctuated into a sentence of its own. Every
+        # fact survives, nothing is invented, and the result is a fragment.
+        record = {"record": {"id": "s", "answer":
+                  "Yes, seniors will assist and guide you to solve the problems you face, if possible."}}
+        split_clause = ("Yes, seniors will assist and guide you to solve the problems "
+                        "you face. If possible.")
+        with patch("app.llm.requests.post", return_value=mock_response(split_clause)):
+            self.assertIsNone(synthesize_answer("seniors in sastra", record, reword_on_failure=False))
+
+    def test_ordinary_second_sentence_is_kept(self):
+        self.assertFalse(_has_dangling_clause(
+            "Girls should be in the hostel by 6 PM. Boys should be back by 8:30 PM."))
+
+class NameInflectionTests(unittest.TestCase):
+    """Title-cased ordinary words ("Continuous Internal Assessments") parse
+    as source names, and a rephrase that inflects them ("continuously",
+    "assessment") was scored as having dropped facts it kept -- the retry
+    that echoed its own correction above is what that spurious retry
+    produced."""
+
+    def test_inflected_forms_count_as_present(self):
+        source = ["CIA - Continuous Internal Assessments are the internal exams. "
+                  "Three CIAs are conducted per semester."]
+        reply = ("CIA exams run continuously through each semester, with three such "
+                 "internal assessment rounds in all.")
+        self.assertFalse(_names_drifted(reply, source))
+
+    def test_a_genuinely_dropped_name_is_still_caught(self):
+        source = ["Krishna Canteen, Canopy and Kannappa Hotel are all good options."]
+        self.assertTrue(_names_drifted("Krishna Canteen and Canopy are good options.", source))
+
+# A record whose stored answer is written as the reply to a yes/no question.
+# Scored well above LLM_VETO_OVERRIDE_SCORE, so a shape-based abstention here
+# really is the shape rule and not a weak-evidence one.
+POLAR_CANDIDATE = {"score": 0.84, "question": "boys hostel outing time", "record": {
+    "id": "p", "answer": "Yes, boys are allowed to go outside the hostels, but they must return before 9:30 PM."}}
+
+class QuestionShapeGuardTests(unittest.TestCase):
+    def test_value_question_does_not_get_a_yes_no_record_by_override(self):
+        # The reported bug: "What are the hostels available for boys?" and
+        # "How many hostels are there for boys?" both answered "Yes, boys are
+        # allowed to go outside the hostels..." -- a sentence that names no
+        # hostel and counts nothing. Every candidate refused the question, so
+        # only topical overlap was carrying this record.
+        with patch("app.llm.requests.post", side_effect=[
+                mock_response("NONE"), mock_response("NOT_FOUND"), mock_response("NOT_FOUND")]):
+            self.assertIsNone(disambiguate_and_answer("How many hostels are there for boys ?",
+                                                       [POLAR_CANDIDATE, WEAK_B]))
+
+    def test_same_record_is_served_when_the_student_did_ask_yes_or_no(self):
+        # The other half: the shape rule must not cost the override any of
+        # the cases it exists for. Same record, same total veto, polar
+        # question -- answered.
+        reworded = "Boys may head out of the hostels as long as they are back before 9:30 PM."
+        with patch("app.llm.requests.post", side_effect=[
+                mock_response("NONE"), mock_response("NOT_FOUND"),
+                mock_response("NOT_FOUND"), mock_response(reworded)]):
+            chosen, text = disambiguate_and_answer("Are boys allowed to go outside the hostels?",
+                                                    [POLAR_CANDIDATE, WEAK_B])
+        self.assertIs(chosen, POLAR_CANDIDATE)
+        self.assertEqual(text, reworded)
+
+    def test_bare_topic_query_still_gets_a_yes_no_record(self):
+        # "Seniors in SASTRA" asks for no particular value, so a yes/no
+        # record answers it fine and must not be discarded. Only an explicit
+        # what/when/how-many question rejects on shape.
+        reworded = "Boys can go out of the hostels, but they need to be back by 9:30 PM."
+        with patch("app.llm.requests.post", side_effect=[
+                mock_response("NONE"), mock_response("NOT_FOUND"),
+                mock_response("NOT_FOUND"), mock_response(reworded)]):
+            chosen, text = disambiguate_and_answer("boys hostel outing", [POLAR_CANDIDATE, WEAK_B])
+        self.assertIs(chosen, POLAR_CANDIDATE)
+        self.assertEqual(text, reworded)
+
+    def test_unphraseable_yes_no_record_is_not_served_raw_to_a_value_question(self):
+        # The other route the reported answer arrived by: the model engages
+        # with the record (so the walk would settle here), the rephrase fails
+        # every check, the reword fails too, and the caller shows raw corpus
+        # text. Serving "Yes, ..." unrephrased to "how many" is the one case
+        # where an engaged-with record is still the wrong record.
+        drifted = "Boys can go outside the hostels but must be back before 10:30 PM."
+        with patch("app.llm.requests.post", side_effect=[
+                mock_response("INDEX: 1"), mock_response(drifted),
+                mock_response("NOT_FOUND"), mock_response("NOT_FOUND")]):
+            self.assertIsNone(disambiguate_and_answer("How many hostels are there for boys ?",
+                                                       [POLAR_CANDIDATE]))
 
 if __name__ == "__main__": unittest.main()

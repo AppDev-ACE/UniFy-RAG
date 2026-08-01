@@ -7,6 +7,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 from app.config import INDEX_DIR, LOG_DIR, TAU_HIGH, TAU_LOW
 from app.llm import disambiguate_and_answer, synthesize_answer
+from app.phrasing import strip_polar_prefix
 from app.retrieval import Retriever, normalize
 from app.safety import abstention, mandatory_route
 
@@ -56,9 +57,25 @@ def verification_status(record: dict) -> str:
         return "trusted_legacy"
     return "verified"
 
-def answer_payload(record: dict, confidence: float | None = None, llm_answer: str | None = None) -> dict:
+def answer_payload(record: dict, confidence: float | None = None, llm_answer: str | None = None,
+                    *, query: str | None = None) -> dict:
+    """Build the /ask response for `record`.
+
+    `query` is what the student typed, and is used for presentation only:
+    most of this corpus is written as replies to yes/no questions, so a
+    stored answer regularly opens "Yes, " or "No, " even when the student
+    asked what or how many, and reads as an answer to a question they did
+    not ask (see app.phrasing). `raw_answer` always carries the stored text
+    untouched, so nothing downstream of attribution or review changes.
+    Omitted by /pairs/{pair_id}, where the student tapped a reviewed
+    question rather than typing one, and its stored phrasing is the
+    question.
+    """
+    answer = llm_answer if llm_answer is not None else record["answer"]
+    if query is not None:
+        answer = strip_polar_prefix(answer, query)
     response = {
-        "status": "answered", "answer": llm_answer if llm_answer is not None else record["answer"],
+        "status": "answered", "answer": answer,
         "raw_answer": record["answer"], "source": record["source"],
         "source_url": record["source_url"], "last_verified": record["last_verified"],
         "pair_id": record["id"], "verification_status": verification_status(record),
@@ -100,7 +117,7 @@ def _resolve(request: AskRequest) -> dict:
     exact = searcher.exact_match(request.query)
     if exact:
         llm_answer = synthesize_answer(request.query, {"record": exact["record"]})
-        return answer_payload(exact["record"], 1.0, llm_answer)
+        return answer_payload(exact["record"], 1.0, llm_answer, query=request.query)
     matches = searcher.search(request.query)
     # Gate on the best evidence anywhere in the retrieved pool, not
     # only whichever record RRF ranked first. RRF's ordering can put
@@ -141,7 +158,7 @@ def _resolve(request: AskRequest) -> dict:
         if not disambiguated:
             return abstention(matches[0]["record"].get("category"))
         chosen, llm_answer = disambiguated
-        response = answer_payload(chosen["record"], chosen["score"], llm_answer)
+        response = answer_payload(chosen["record"], chosen["score"], llm_answer, query=request.query)
         if llm_answer is not None:
             response["answer_mode"] = "llm_disambiguated"
         return response
@@ -153,7 +170,7 @@ def _resolve(request: AskRequest) -> dict:
     # grounding against it makes the completeness check
     # unsatisfiable (see synthesize_answer's docstring).
     llm_answer = synthesize_answer(request.query, x)
-    return answer_payload(x["record"], x["score"], llm_answer)
+    return answer_payload(x["record"], x["score"], llm_answer, query=request.query)
 
 @app.get("/pairs/{pair_id}")
 def get_selected_pair(pair_id: str):

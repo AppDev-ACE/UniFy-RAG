@@ -95,6 +95,18 @@ own terms rather than by one generic "looks wrong" check:
   said. Caught by a marker list (`FILLER_MARKERS`) plus an unsourced
   question-mark heuristic, with its own one-shot retry
   (`_retry_drop_commentary`).
+- A model answering one of the retry corrections below sometimes recites
+  the correction's own list of left-out facts back instead of rewriting
+  anything ("3, 2, Continuous, Internal, Assessments, Three, CIAs and these
+  statements: ..."). Because the correction is assembled out of the source
+  record's own figures and sentences, such a reply passes every check here
+  by construction while being no answer at all, so it is rejected on the
+  scaffolding phrases it repeats and on the shape of a bare list
+  (`_echoes_correction`, `_is_bare_enumeration`). No retry: this is what a
+  retry already produced.
+- A source qualifier can come back re-punctuated as a sentence of its own --
+  "...the problems you face. If possible." -- with every fact intact and a
+  dangling fragment where the clause used to be (`_has_dangling_clause`).
 - A whole clause carrying neither a digit nor a proper noun can be dropped
   ("Non-vegetarian food is strictly prohibited inside the campus and
   hostels" -- a prohibition, gone) or invented ("This is your best option
@@ -120,6 +132,7 @@ import re
 import requests
 from app.config import (LLM_ENABLED, LLM_MAX_CONTEXT_RECORDS, LLM_TIMEOUT_SECONDS,
                         LLM_VETO_OVERRIDE_SCORE, OLLAMA_HOST, OLLAMA_MODEL)
+from app.phrasing import asks_for_value, is_polar_answer
 
 NOT_FOUND = "NOT_FOUND"
 NUMBER_RE = re.compile(r"\d+")
@@ -319,11 +332,31 @@ def _extract_names_in_order(text: str) -> list[str]:
     return ordered
 
 def _name_key(name: str) -> str:
-    """Leading alphanumeric run of a name, lowercased -- so a possessive or
-    punctuated form ("Krishna's") still matches the plain word a rephrase
-    would use."""
+    """Leading alphanumeric run of a name, lowercased and depluralized -- so
+    a possessive, punctuated or plural form ("Krishna's", "CIAs") still
+    matches the plain word a rephrase would use."""
     words = _normalized_words(name)
-    return words[0] if words else name.lower()
+    return _stem(words[0]) if words else name.lower()
+
+# A source "name" is only a *candidate* name -- the capitalization rules
+# below cannot tell a real proper noun from a title-cased ordinary word, and
+# this corpus is full of the latter: "CIA - Continuous Internal Assessments
+# are the internal exams" contributes Continuous, Internal and Assessments.
+# A rephrase that says "conducted continuously" or "three assessments" has
+# dropped nothing, but exact-word matching scored all three as missing,
+# which is what sent that record's rephrase into a retry it did not need and
+# then to the verbatim fallback. Matching the stem as a prefix covers the
+# inflections a rephrase legitimately reaches for (Continuous ->
+# continuously, Assessments -> assessment) without loosening the check for
+# the case it exists to catch: a genuinely dropped place or brand name
+# ("Kannappa") shares no prefix with anything in the reply.
+MIN_PREFIX_MATCH_LENGTH = 4
+
+def _name_present(key: str, present: set[str]) -> bool:
+    if key in present:
+        return True
+    return (len(key) >= MIN_PREFIX_MATCH_LENGTH
+            and any(word.startswith(key) for word in present))
 
 def _missing_names(text: str, answers: list[str]) -> list[str]:
     # Asymmetric on purpose. The capitalization/position rules above encode
@@ -337,9 +370,9 @@ def _missing_names(text: str, answers: list[str]) -> list[str]:
     # positive, not any real omission, is what forced the verbatim fallback
     # on most answers. Presence is therefore tested against every word of
     # the reply, however it happens to be cased or positioned.
-    present = set(_normalized_words(text))
+    present = {_stem(word) for word in _normalized_words(text)}
     return [name for name in _extract_names_in_order("\n".join(answers))
-            if _name_key(name) not in present]
+            if not _name_present(_name_key(name), present)]
 
 def _names_drifted(text: str, answers: list[str]) -> bool:
     # Deliberately one-directional (missing only, not "any extra name is
@@ -397,21 +430,20 @@ SENTENCE_COVERAGE = 0.4
 # to the number and name checks.
 MIN_SENTENCE_CONTENT_WORDS = 4
 
+def _stem(word: str) -> str:
+    """Crude depluralization so "buses"/"bus", "hostels"/"hostel" and
+    "CIAs"/"CIA" count as the same word. Over-merging is harmless
+    everywhere this is used: they all measure overlap, not identity, and a
+    false *match* only ever makes a check more permissive, never more likely
+    to reject a good answer."""
+    if len(word) > 3 and word.endswith("es"):
+        return word[:-2]
+    if len(word) > 3 and word.endswith("s"):
+        return word[:-1]
+    return word
+
 def _content_words(text: str) -> set[str]:
-    # Crude depluralization so "buses"/"bus" and "hostels"/"hostel" count as
-    # the same word. Over-merging is harmless here: this measures overlap,
-    # not identity, and a false *match* only ever makes the check more
-    # permissive, never more likely to reject a good answer.
-    words = set()
-    for word in _normalized_words(text):
-        if word in STOPWORDS:
-            continue
-        if len(word) > 3 and word.endswith("es"):
-            word = word[:-2]
-        elif len(word) > 3 and word.endswith("s"):
-            word = word[:-1]
-        words.add(word)
-    return words
+    return {_stem(word) for word in _normalized_words(text) if word not in STOPWORDS}
 
 def _sentences(text: str) -> list[str]:
     return [s.strip() for s in re.split(r"(?<=[.!?])\s+", text) if s.strip()]
@@ -564,6 +596,72 @@ def _has_added_commentary(text: str, answers: list[str]) -> bool:
     # unless the source itself already contains one.
     return "?" in text and not any("?" in answer for answer in answers)
 
+# A retry correction below names the facts the first attempt left out, and a
+# small model sometimes "fixes" its answer by reciting that list back
+# instead of rewriting anything. Observed, served to a student as the whole
+# answer to "When are the CIA exams":
+#
+#   3, 2, Continuous, Internal, Assessments, Three, CIAs and these
+#   statements: "The best of 2 from the three is considered as the final
+#   internal marks".
+#
+# Every check in this module passes it, by construction rather than by
+# accident: the correction was assembled out of the source record's own
+# figures, names and sentences, so nothing is missing, nothing is invented,
+# no number drifted, and it is not a verbatim copy of the record either. It
+# is simply not an answer -- it is the scaffolding of the question that was
+# put to the model.
+#
+# Caught two ways because neither is sufficient alone. The markers are the
+# phrasing the correction wraps around its list, and catch an echo however
+# it is punctuated; the shape check catches a list that was recited without
+# the surrounding words. Both are scoped to replies to a correction -- a
+# first attempt has no correction to echo, and the shape rule is too blunt
+# to apply to answers in general.
+CORRECTION_ECHO_MARKERS = (
+    "these statements", "these exact figures", "previous answer", "left out",
+    "rewrite the full answer", "everything else already correct",
+    "with their meaning unchanged",
+)
+
+def _echoes_correction(text: str) -> bool:
+    lowered = text.lower()
+    return any(marker in lowered for marker in CORRECTION_ECHO_MARKERS)
+
+# Leading comma-separated fragments of one or two words each -- "3, 2,
+# Continuous, Internal, Assessments, ...". No stored answer in this corpus
+# opens that way, and no restatement of one has a reason to.
+MIN_ENUMERATED_FRAGMENTS = 3
+
+def _is_bare_enumeration(text: str) -> bool:
+    sentences = _sentences(text)
+    leading = 0
+    for fragment in (sentences[0] if sentences else text).split(","):
+        if len(fragment.split()) > 2:
+            break
+        leading += 1
+    return leading >= MIN_ENUMERATED_FRAGMENTS
+
+# A trailing subordinate clause promoted to a sentence of its own: the
+# record "Yes, seniors will assist and guide you to solve the problems you
+# face, if possible" came back rephrased as "...the problems you face. If
+# possible." -- every fact intact, nothing invented, and a dangling fragment
+# where the qualifier used to be. Restricted to a short sentence that opens
+# with a subordinating word, which is what a split-off clause looks like and
+# what a real sentence does not.
+DANGLING_OPENERS = {
+    "if", "when", "while", "although", "though", "because", "unless",
+    "since", "whereas", "however", "therefore", "and", "but", "or", "so",
+}
+MAX_DANGLING_WORDS = 3
+
+def _has_dangling_clause(text: str) -> bool:
+    for sentence in _sentences(text)[1:]:
+        words = _normalized_words(sentence)
+        if 0 < len(words) <= MAX_DANGLING_WORDS and words[0] in DANGLING_OPENERS:
+            return True
+    return False
+
 WORD_RE = re.compile(r"[a-z0-9]+")
 
 def _normalized_words(text: str) -> list[str]:
@@ -625,7 +723,9 @@ def _retry_missing_facts(system_prompt: str, query: str, answers: list[str], fir
         "CONTEXT still doesn't answer the question, reply with exactly: " + NOT_FOUND
     )
     retry_text = _call_ollama(system_prompt, _user_content(query, _build_context(answers), correction))
-    if _is_unusable(retry_text) or _facts_drifted(retry_text, answers):
+    if _is_unusable(retry_text) or _echoes_correction(retry_text) or _is_bare_enumeration(retry_text):
+        return None
+    if _facts_drifted(retry_text, answers) or _has_dangling_clause(retry_text):
         return None
     return retry_text
 
@@ -639,9 +739,11 @@ def _retry_personalize(system_prompt: str, query: str, answers: list[str]) -> st
         "still doesn't answer the question, reply with exactly: " + NOT_FOUND
     )
     retry_text = _call_ollama(system_prompt, _user_content(query, _build_context(answers), correction))
-    if _is_unusable(retry_text):
+    if _is_unusable(retry_text) or _echoes_correction(retry_text):
         return None
     if _facts_drifted(retry_text, answers) or _is_verbatim_copy(retry_text, answers):
+        return None
+    if _has_dangling_clause(retry_text):
         return None
     return retry_text
 
@@ -655,9 +757,11 @@ def _retry_drop_commentary(system_prompt: str, query: str, answers: list[str]) -
         "If CONTEXT still doesn't answer the question, reply with exactly: " + NOT_FOUND
     )
     retry_text = _call_ollama(system_prompt, _user_content(query, _build_context(answers), correction))
-    if _is_unusable(retry_text):
+    if _is_unusable(retry_text) or _echoes_correction(retry_text):
         return None
     if _facts_drifted(retry_text, answers) or _is_verbatim_copy(retry_text, answers) or _has_added_commentary(retry_text, answers):
+        return None
+    if _has_dangling_clause(retry_text):
         return None
     return retry_text
 
@@ -704,6 +808,8 @@ def _reword_only(answers: list[str]) -> str | None:
         return None
     if _facts_drifted(text, answers) or _is_verbatim_copy(text, answers) or _has_added_commentary(text, answers):
         return None
+    if _has_dangling_clause(text):
+        return None
     return text
 
 def _grounded_rephrase(query: str, answers: list[str]) -> tuple[str | None, str]:
@@ -741,6 +847,13 @@ def _grounded_rephrase(query: str, answers: list[str]) -> tuple[str | None, str]
         text = _retry_drop_commentary(SYSTEM_PROMPT, query, answers)
         if text is None:
             return None, UNPHRASEABLE
+    # A dangling clause is a wording defect, not a verdict on the record, so
+    # it reports UNPHRASEABLE and lets the question-free reword have its
+    # pass -- the fragment is an artifact of re-punctuating a source
+    # qualifier while answering, and usually does not survive a rewrite that
+    # has no question to answer.
+    if _has_dangling_clause(text):
+        return None, UNPHRASEABLE
     return text, OK
 
 def synthesize_answer(query: str, match: dict | None, *, reword_on_failure: bool = True) -> str | None:
@@ -786,6 +899,30 @@ def synthesize_answer(query: str, match: dict | None, *, reword_on_failure: bool
     if reason == UNAVAILABLE or not reword_on_failure:
         return None
     return _reword_only(answers)
+
+# Retrieval matches on topic and has no notion of what *kind* of question
+# was asked, so a record whose stored answer is written as a reply to a
+# yes/no question ("Yes, boys are allowed to go outside the hostels, but
+# they must return before 9:30 PM") gets served to a student who asked for a
+# value: "What are the hostels available for boys?", "How many hostels are
+# there for boys?" -- both answered with that same sentence, which names no
+# hostel and counts nothing, while the record that does answer both
+# (AHALYA and ARUNDHATHI) sat in the same index.
+#
+# On its own a shape mismatch is weak evidence and must not veto anything:
+# "What are the canteens available at campus" is answered perfectly well by
+# a record that happens to open "Yes, SASTRA has multiple dining options.
+# Popular spots are...". It only carries weight in combination with the
+# model having declined to phrase that record as an answer at all -- at
+# which point nothing is left vouching for relevance except lexical overlap
+# with a record that answers a question the student did not ask.
+#
+# `asks_for_value`, not "isn't polar": a bare topic ("Seniors in SASTRA")
+# demands no particular value, so a yes/no record can answer it and must not
+# be discarded here. Tried the wider rule first and it abstained on exactly
+# that query, which the corpus does answer.
+def _shape_mismatch(query: str, record: dict) -> bool:
+    return asks_for_value(query) and is_polar_answer(record.get("answer", ""))
 
 def _parse_disambiguation(text: str) -> int | None:
     # Asked for a single "INDEX: n" line and nothing else, the model very
@@ -903,7 +1040,16 @@ def disambiguate_and_answer(query: str, candidates: list[dict]) -> tuple[dict, s
             # it rather than returning NOT_FOUND -- so the topic is settled
             # and the walk stops. One question-free reword is the last
             # chance at LLM wording before the caller serves it verbatim.
-            return candidate, _reword_only(answers)
+            reworded = _reword_only(answers)
+            # Unless what the caller would then serve is a yes/no answer,
+            # raw, to a student who asked for a value. Engagement is the
+            # only thing vouching for this record, and it is the weaker
+            # signal of the two here: nothing that could be restated as an
+            # answer to "how many" plus a stored answer shaped as a reply to
+            # "are they allowed" means the walk has not found the record yet.
+            if reworded is None and _shape_mismatch(query, candidate["record"]):
+                continue
+            return candidate, reworded
     # Every candidate was rejected as not answering the question -- but that
     # is one 3B model's opinion, and on its own it is not allowed to throw
     # away strong retrieval evidence. When the best-scoring candidate clears
@@ -918,7 +1064,19 @@ def disambiguate_and_answer(query: str, candidates: list[dict]) -> tuple[dict, s
     #
     # Below it, the model's refusal and weak retrieval agree, and that is a
     # real abstention: route to a human.
+    #
+    # With one exception, and it is the case the override was never meant to
+    # cover: here every candidate has refused the question, so the record is
+    # carried entirely by its retrieval score -- and a score is topical
+    # overlap, which "hostels ... boys" earns just as easily from the outing
+    # -time record as from the one that names the hostels. When that record
+    # is also shaped as a reply to a yes/no question the student did not
+    # ask, the two independent signals agree that it answers something else,
+    # and abstaining is the honest outcome. The override's own confirmed
+    # cases are unaffected: "whether stationery shop is available" is itself
+    # a yes/no question, and "hostel rules for boys" and "girls' outing
+    # rules" resolve to records that do not open with a verdict.
     best = max(capped, key=lambda c: c["score"])
-    if best["score"] >= LLM_VETO_OVERRIDE_SCORE:
+    if best["score"] >= LLM_VETO_OVERRIDE_SCORE and not _shape_mismatch(query, best["record"]):
         return best, _reword_only([best["record"]["answer"]])
     return None
