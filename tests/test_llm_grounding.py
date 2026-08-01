@@ -22,17 +22,6 @@ WEAK_A = {"score": 0.31, "question": "when is orientation", "record": {
 WEAK_B = {"score": 0.22, "question": "parent orientation", "record": {
     "id": "wb", "answer": "An optional parent orientation is held on August 3 from 11:30 a.m. to 1:00 p.m."}}
 
-def run_in_order(*jobs):
-    """Stand-in for app.llm._parallel that runs jobs in the order given.
-
-    The tests below drive the model with an ordered list of replies, which
-    only describes an outcome if the calls happen in a defined order. The
-    pick and the first candidate's opening probe are concurrent in
-    production precisely because neither waits on the other, so this pins
-    that pair's order for the assertions without changing which calls are
-    made or what is done with them."""
-    return [job[0](*job[1:]) for job in jobs]
-
 def mock_response(content: str) -> Mock:
     resp = Mock()
     resp.raise_for_status = Mock()
@@ -415,14 +404,6 @@ class RewordFallbackTests(unittest.TestCase):
         self.assertEqual(post.call_count, 1)
 
 class DisambiguationTests(unittest.TestCase):
-    def setUp(self):
-        # The pick and capped[0]'s opening probe run concurrently, so the
-        # ordered reply lists below need that pair pinned to a defined
-        # order to mean anything. See run_in_order.
-        patcher = patch("app.llm._parallel", side_effect=run_in_order)
-        patcher.start()
-        self.addCleanup(patcher.stop)
-
     def test_bracketed_index_is_parsed_and_grounds_to_the_chosen_candidate(self):
         # Real observed model output: "INDEX: [1]" rather than "INDEX: 1" --
         # mirrors the [1]/[2]/[3] notation used in the prompt's own context.
@@ -762,14 +743,6 @@ POLAR_CANDIDATE = {"score": 0.84, "question": "boys hostel outing time", "record
     "id": "p", "answer": "Yes, boys are allowed to go outside the hostels, but they must return before 9:30 PM."}}
 
 class QuestionShapeGuardTests(unittest.TestCase):
-    def setUp(self):
-        # The pick and capped[0]'s opening probe run concurrently, so the
-        # ordered reply lists below need that pair pinned to a defined
-        # order to mean anything. See run_in_order.
-        patcher = patch("app.llm._parallel", side_effect=run_in_order)
-        patcher.start()
-        self.addCleanup(patcher.stop)
-
     def test_override_falls_through_to_the_record_that_answers_the_question(self):
         # The reported bug in full. Both records are strong and a hair apart
         # -- the outing-time record edges it on score alone -- and the model
